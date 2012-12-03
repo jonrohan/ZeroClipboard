@@ -106,53 +106,72 @@ ZeroClipboard.Client.prototype = {
   handlers: null, // user event handlers
   zIndex: 99, // default zIndex of the movie object
 
-  glue: function(elem, appendElem, stylesToAdd) {
-    // glue to DOM element
-    // elem can be ID or actual DOM element object
-    this.domElement = ZeroClipboard.$(elem);
+  glue: function (elem, appendElem, stylesToAdd) {
+        // glue to DOM element
+        // elem can be ID or actual DOM element object
+        this.domElement = ZeroClipboard.$(elem);
 
-    // float just above object, or default zIndex if dom element isn't set
-    if (this.domElement.style.zIndex) {
-      this.zIndex = parseInt(this.domElement.style.zIndex, 10) + 1;
-    }
+        // float just above object, or zIndex 99 if dom element isn't set
+        var zIndex = 99000000;
+        if (this.domElement.style.zIndex) {
+            zIndex = parseInt(this.domElement.style.zIndex, 10) + 1;
+        }
 
-    // check if the element has a title
-    if (this.domElement.getAttribute("title") != null) {
-      this.title = this.domElement.getAttribute("title");
-    }
+        if (typeof(appendElem) == 'string') {
+            appendElem = ZeroClipboard.$(appendElem);
+        } else if (typeof(appendElem) == 'undefined') {
+            appendElem = document.getElementsByTagName('body')[0];
+        }
 
-    if (typeof(appendElem) == 'string') {
-      appendElem = ZeroClipboard.$(appendElem);
-    }
-    else if (typeof(appendElem) == 'undefined') {
-      appendElem = document.getElementsByTagName('body')[0];
-    }
+        // find X/Y position of domElement
+        var box = ZeroClipboard.getDOMObjectPosition(this.domElement, appendElem);
 
-    // find X/Y position of domElement
-    var box = ZeroClipboard.getDOMObjectPosition(this.domElement, appendElem);
-
-    // create floating DIV above element
-    this.div = document.createElement('div');
-    var style = this.div.style;
-    style.position = 'absolute';
-    style.left = '' + box.left + 'px';
-    style.top = '' + box.top + 'px';
-    style.width = '' + box.width + 'px';
-    style.height = '' + box.height + 'px';
-    style.zIndex = this.zIndex;
-
-    if (typeof(stylesToAdd) == 'object') {
-      for (var addedStyle in stylesToAdd) {
-        style[addedStyle] = stylesToAdd[addedStyle];
-      }
-    }
-
-    // style.backgroundColor = '#f00'; // debug
-
-    appendElem.appendChild(this.div);
-
-    this.div.innerHTML = this.getHTML( box.width, box.height );
-  },
+        // create floating DIV above element
+        this.div = document.createElement('div');
+        this.div.className = "zclip";
+        this.div.id = "zclip-" + this.movieId;
+        $(this.domElement).data('zclipId', 'zclip-' + this.movieId);
+        var style = this.div.style;
+        style.position = 'absolute';
+        
+        // debug
+        //box.left = 0;
+        //box.top = 0;
+        //box.width = 700;
+        //box.height = 700;
+        //style.backgroundColor = '#f00'; 
+        //style.display = "block";
+        //style.visibility = "visible";
+        
+        style.left = '' + box.left + 'px';
+        style.top = '' + box.top + 'px';
+        style.width = '' + box.width + 'px';
+        style.height = '' + box.height + 'px';
+        style.zIndex = zIndex;
+       
+        if (typeof(stylesToAdd) == 'object') {
+            for (addedStyle in stylesToAdd) {
+                style[addedStyle] = stylesToAdd[addedStyle];
+            }
+        }
+        
+  	hm = this.getHTML(box.width, box.height);
+		
+		// ie hates to add innerHtml after the div has been attached to the
+        // DOM
+        this.div.innerHTML = hm;
+        
+        ae = appendElem;
+        // if the current element is a (valid) td and thus the parent is a tr, we can not just append a div to that!
+        if ( $(ae).is('TR') && $(elem).is('TD') )
+        	ae = elem;
+        //console.log(ae);
+        
+        // jQuery is is less obstrusive in adding elements
+        //$(ae).append(this.div.outerHTML);
+        // for those w/o jQuery, uncomment the following
+        ae.appendChild(this.div);
+    },
 
   getHTML: function(width, height) {
     // return HTML for movie
