@@ -112,7 +112,6 @@ ZeroClipboard.Client.prototype = {
         this.domElement = ZeroClipboard.$(elem);
 
         // float just above object, or zIndex 99 if dom element isn't set
-        var zIndex = 99000000;
         if (this.domElement.style.zIndex) {
             zIndex = parseInt(this.domElement.style.zIndex, 10) + 1;
         }
@@ -128,20 +127,16 @@ ZeroClipboard.Client.prototype = {
 
         // create floating DIV above element
         this.div = document.createElement('div');
-        this.div.className = "zclip";
-        this.div.id = "zclip-" + this.movieId;
-        $(this.domElement).data('zclipId', 'zclip-' + this.movieId);
+        
+        // to add custom handlers and styles
+        this.div.className = "zeroClipboard";
+        this.div.id = "zeroClipboard-" + this.movieId;
+        
         var style = this.div.style;
         style.position = 'absolute';
         
         // debug
-        //box.left = 0;
-        //box.top = 0;
-        //box.width = 700;
-        //box.height = 700;
         //style.backgroundColor = '#f00'; 
-        //style.display = "block";
-        //style.visibility = "visible";
         
         style.left = '' + box.left + 'px';
         style.top = '' + box.top + 'px';
@@ -155,22 +150,17 @@ ZeroClipboard.Client.prototype = {
             }
         }
         
-  	hm = this.getHTML(box.width, box.height);
-		
-		// ie hates to add innerHtml after the div has been attached to the
-        // DOM
-        this.div.innerHTML = hm;
+  	// first create entire div before appending to the DOM
+        this.div.innerHTML = this.getHTML(box.width, box.height);
         
-        ae = appendElem;
+        var aeTagName = appendElem.tagName.toLowerCase();
+        var elemTagName = elem.tagName.toLowerCase();
+        
         // if the current element is a (valid) td and thus the parent is a tr, we can not just append a div to that!
-        if ( $(ae).is('TR') && $(elem).is('TD') )
-        	ae = elem;
-        //console.log(ae);
+        if ( aeTagName == 'tr' && elemTagName == 'td' )
+        	appendElem = elem;
         
-        // jQuery is is less obstrusive in adding elements
-        //$(ae).append(this.div.outerHTML);
-        // for those w/o jQuery, uncomment the following
-        ae.appendChild(this.div);
+        appendElem.appendChild(this.div);
     },
 
   getHTML: function(width, height) {
