@@ -122,7 +122,7 @@ function _elementMouseOver(event) {
  *
  * returns nothing
  */
-ZeroClipboard.Client.prototype.glue = function (query) {
+ZeroClipboard.Client.prototype.glue = function (query, context) {
 
   // private function for adding events to the dom, IE before 9 is suckage
   function _addEventHandler(element, method, func) {
@@ -134,7 +134,7 @@ ZeroClipboard.Client.prototype.glue = function (query) {
   }
 
   // store the element from the page
-  var elements = ZeroClipboard.$(query);
+  var elements = ZeroClipboard.$(query, context);
 
   for (var i = 0; i < elements.length ; i++) {
     _addEventHandler(elements[i], "mouseover", _elementMouseOver);
@@ -146,7 +146,7 @@ ZeroClipboard.Client.prototype.glue = function (query) {
  *
  * returns nothing
  */
-ZeroClipboard.Client.prototype.unglue = function (query) {
+ZeroClipboard.Client.prototype.unglue = function (query, context) {
 
   // private function for removing events from the dom, IE before 9 is suckage
   function _removeEventHandler(element, method, func) {
@@ -158,7 +158,7 @@ ZeroClipboard.Client.prototype.unglue = function (query) {
   }
 
   // store the element from the page
-  var elements = ZeroClipboard.$(query);
+  var elements = ZeroClipboard.$(query, context);
 
   for (var i = 0; i < elements.length ; i++) {
     _removeEventHandler(elements[i], "mouseover", _elementMouseOver);
