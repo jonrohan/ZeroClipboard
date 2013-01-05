@@ -217,7 +217,7 @@
     }
     ZeroClipboard._client.setCurrent(elementWrapper(target));
   }
-  ZeroClipboard.Client.prototype.glue = function(query) {
+  ZeroClipboard.Client.prototype.glue = function(query, context) {
     function _addEventHandler(element, method, func) {
       if (element.addEventListener) {
         element.addEventListener(method, func, false);
@@ -225,12 +225,12 @@
         element.attachEvent("on" + method, func);
       }
     }
-    var elements = ZeroClipboard.$(query);
+    var elements = ZeroClipboard.$(query, context);
     for (var i = 0; i < elements.length; i++) {
       _addEventHandler(elements[i], "mouseover", _elementMouseOver);
     }
   };
-  ZeroClipboard.Client.prototype.unglue = function(query) {
+  ZeroClipboard.Client.prototype.unglue = function(query, context) {
     function _removeEventHandler(element, method, func) {
       if (element.removeEventListener) {
         element.removeEventListener(method, func, false);
@@ -238,7 +238,7 @@
         element.detachEvent("on" + method, func);
       }
     }
-    var elements = ZeroClipboard.$(query);
+    var elements = ZeroClipboard.$(query, context);
     for (var i = 0; i < elements.length; i++) {
       _removeEventHandler(elements[i], "mouseover", _elementMouseOver);
     }
@@ -308,10 +308,11 @@
     };
     return element;
   }
-  ZeroClipboard.$ = function(query) {
+  ZeroClipboard.$ = function(query, context) {
     var ZeroClipboardSelect = function(s, n) {
       return n.querySelectorAll(s);
     }, result;
+    context = context || document;
     if (typeof Sizzle === "function") {
       ZeroClipboardSelect = function(s, n) {
         return Sizzle.uniqueSort(Sizzle(s, n));
@@ -322,7 +323,7 @@
       };
     }
     if (typeof query === "string") {
-      result = ZeroClipboardSelect(query, document);
+      result = ZeroClipboardSelect(query, context);
       if (result.length === 0) result = [ document.getElementById(query) ];
     }
     var newresult = [];

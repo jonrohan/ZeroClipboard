@@ -69,10 +69,11 @@ function elementWrapper(element) {
  *
  * returns the found elements
  */
-ZeroClipboard.$ = function (query) {
+ZeroClipboard.$ = function (query, context) {
 
   var ZeroClipboardSelect = function (s, n) { return n.querySelectorAll(s); },
     result;
+  context = context || document;
 
   // Prefer Sizzle, if available.
   if (typeof Sizzle === "function") {
@@ -82,7 +83,7 @@ ZeroClipboard.$ = function (query) {
   }
 
   if (typeof query === "string") {
-    result = ZeroClipboardSelect(query, document);
+    result = ZeroClipboardSelect(query, context);
     // last ditch effort for backwards compatibility
     if (result.length === 0) result = [document.getElementById(query)];
   }
