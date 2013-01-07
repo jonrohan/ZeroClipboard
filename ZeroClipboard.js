@@ -160,7 +160,7 @@
   ZeroClipboard.prototype.setCurrent = function(element) {
     currentElement = element;
     this.reposition();
-    this.setText(this.options.text || element.getAttribute("data-clipboard-text"));
+    this.setText(this.options.text || element.getAttribute("data-clipboard-text") || document.getElementById(element.getAttribute("data-clipboard-target")).innerHTML);
     if (element.getAttribute("title")) {
       this.setTitle(element.getAttribute("title"));
     }
