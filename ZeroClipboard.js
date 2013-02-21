@@ -215,7 +215,19 @@
     var client = ZeroClipboard.prototype._singleton;
     var container = document.getElementById("global-zeroclipboard-html-bridge");
     if (!container) {
-      var html = '      <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="global-zeroclipboard-flash-bridge" width="100%" height="100%">         <param name="movie" value="' + client.options.moviePath + _noCache(client.options.moviePath) + '"/>         <param name="allowScriptAccess" value="' + client.options.allowScriptAccess + '"/>         <param name="scale" value="exactfit"/>         <param name="loop" value="false"/>         <param name="menu" value="false"/>         <param name="quality" value="best" />         <param name="bgcolor" value="#ffffff"/>         <param name="wmode" value="transparent"/>         <param name="flashvars" value="' + _vars(client.options) + '"/>         <embed src="' + client.options.moviePath + _noCache(client.options.moviePath) + '"           loop="false" menu="false"           quality="best" bgcolor="#ffffff"           width="100%" height="100%"           name="global-zeroclipboard-flash-bridge"           allowScriptAccess="always"           allowFullScreen="false"           type="application/x-shockwave-flash"           wmode="transparent"           pluginspage="http://www.macromedia.com/go/getflashplayer"           flashvars="' + _vars(client.options) + '"           scale="exactfit">         </embed>       </object>';
+      var html = '<object id="global-zeroclipboard-flash-bridge" type="application/x-shockwave-flash" data="';
+      html += client.options.moviePath + _noCache(client.options.moviePath);
+      html += '" style="width:inherit;height:inherit">';
+      html += '  <param name="allowScriptAccess" value="' + client.options.allowScriptAccess + '" />';
+      html += '  <param name="movie" value="' + client.options.moviePath + _noCache(client.options.moviePath) + '" />';
+      html += '  <param name="scale" value="noscale" />';
+      html += '  <param name="loop" value="false" />';
+      html += '  <param name="menu" value="false" />';
+      html += '  <param name="quality" value="best" />';
+      html += '  <param name="align" value="lt" />';
+      html += '  <param name="wmode" value="transparent" />';
+      html += '  <param name="FlashVars" value="' + _vars(client.options) + '" />';
+      html += '</object>';
       container = document.createElement("div");
       container.id = "global-zeroclipboard-html-bridge";
       container.setAttribute("class", "global-zeroclipboard-container");
