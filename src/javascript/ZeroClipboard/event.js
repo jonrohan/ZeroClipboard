@@ -60,6 +60,7 @@ ZeroClipboard.prototype.receiveEvent = function (eventName, args) {
   eventName = eventName.toString().toLowerCase().replace(/^on/, '');
 
   var element = currentElement;
+  var performCallbackAsync = true;
 
   // special behavior for certain events
   switch (eventName) {
@@ -101,6 +102,8 @@ ZeroClipboard.prototype.receiveEvent = function (eventName, args) {
       var defaultText = element.getAttribute('data-clipboard-text');
       if (defaultText) this.setText(defaultText);
     }
+
+    performCallbackAsync = false;
     break;
 
   case 'complete':
@@ -114,11 +117,10 @@ ZeroClipboard.prototype.receiveEvent = function (eventName, args) {
 
     if (typeof(func) == 'function') {
       // actual function reference
-      func.call(element, this, args);
+      _dispatchCallback(func, element, this, args, performCallbackAsync);
     }
     else if (typeof(func) == 'string') {
-      // name of function
-      window[func].call(element, this, args);
+      _dispatchCallback(window[func], element, this, args, performCallbackAsync);
     }
   } // user defined handler for event
 };
