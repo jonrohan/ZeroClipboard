@@ -69,6 +69,17 @@ ZeroClipboard.prototype.setText = function (newText) {
 };
 
 /*
+ * Sends a signal to the flash object to copy the text to clipboard.
+ *
+ * returns nothing
+ */
+ZeroClipboard.prototype.setText = function (contentText) {
+  if (contentText && contentText !== "") {
+    if (this.ready()) this.flashBridge.copyText(contentText);
+  }
+};
+
+/*
  * Adds a title="" attribute to the htmlBridge to give it tooltip capabiities
  *
  * returns nothing

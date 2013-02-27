@@ -56,6 +56,7 @@ package {
       // external functions
       ExternalInterface.addCallback("setHandCursor", setHandCursor);
       ExternalInterface.addCallback("setText", setText);
+      ExternalInterface.addCallback("copyTest", copyText);
       ExternalInterface.addCallback("setSize", setSize);
 
       // signal to the browser that we are ready
@@ -71,18 +72,8 @@ package {
     //
     // returns nothing
     private function mouseClick(event:MouseEvent): void {
-
-      // Linux currently doesn't use the correct clipboard buffer with the new
-      // Flash 10 API, so we need to use this until we can figure out an alternative
-      flash.system.System.setClipboard(clipText);
-
-      // signal to the page it is done
-      ExternalInterface.call( 'ZeroClipboard.dispatch', 'complete',  metaData(event, {
-        text: clipText.split("\\").join("\\\\")
-      }));
-
-      // reset the text
-      clipText = "";
+      copyTest(clipText);
+      
     }
 
     // mouseOver
@@ -165,6 +156,25 @@ package {
     public function setText(newText:String): void {
       // set the maximum number of files allowed
       clipText = newText;
+    }
+
+    // copyText
+    //
+    // setText gets the clipboard text to be copied from the javascript.
+    //
+    // returns nothing
+    public function copyText(contentText:String): void {      
+      // Linux currently doesn't use the correct clipboard buffer with the new
+      // Flash 10 API, so we need to use this until we can figure out an alternative
+      flash.system.System.setClipboard(contentText);
+
+      // signal to the page it is done
+      ExternalInterface.call( 'ZeroClipboard.dispatch', 'complete',  metaData(event, {
+        text: contentText.split("\\").join("\\\\")
+      }));
+
+      // reset the text
+      clipText = "";
     }
 
     // setHandCursor
