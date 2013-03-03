@@ -17,7 +17,7 @@ var _bridge = function () {
         <param name=\"loop\" value=\"false\"/> \
         <param name=\"menu\" value=\"false\"/> \
         <param name=\"quality\" value=\"best\"/> \
-        <param name=\"wmode\" value=\"window\"/> \
+        <param name=\"wmode\" value=\"transparent\"/> \
         <param name=\"FlashVars\" value=\"" + _vars(client.options) + "\"/> \
       </object>";
 
