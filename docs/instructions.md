@@ -461,6 +461,20 @@ Here is a complete example which exercises every option and event handler:
   </html>
 ```
 
+## AMD
+
+If using AMD, such as RequireJS, note that the SWF file relies on a hard-coded path of 'ZeroClipboard' defined for ZeroClipboard.js. Either put ZeroClipboard.js in the root of your RequireJS base path or configure the path like so:
+
+```
+  requirejs.config({
+    paths: {
+      'ZeroClipboard': 'path/to/ZeroClipboard'
+    }
+  });
+```
+
+Alternatively, you can update the hard-coded value in the ZeroClipboard.as source file and re-build the SWF file by running `make`.
+
 ## Browser Support
 
 Works in IE8+. Works in IE7 but requires Sizzle/jQuery. (And of course works in all of the other browsers.)
