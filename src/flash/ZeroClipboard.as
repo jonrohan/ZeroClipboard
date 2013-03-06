@@ -22,7 +22,8 @@ package {
     // The text in the clipboard
     private var clipText:String = "";
 
-    private var externalDispatch:String = isAMD() ? '(function (event, args) { require(["ZeroClipboard"], function (ZeroClipboard) { ZeroClipboard.dispatch(event, args); }); })' : 'ZeroClipboard.dispatch';
+    // Use wrapped function if AMD is being used, otherwise use the global ZeroClipboard
+    private var externalDispatch:String = isAMD() ? amdWrappedDispatch() : 'ZeroClipboard.dispatch';
 
     // constructor, setup event listeners and external interfaces
     public function ZeroClipboard() {
@@ -195,6 +196,21 @@ package {
     // returns boolean
     private function isAMD(): Boolean {
       return ExternalInterface.call( '(function () { return typeof define === "function" && define.amd; })');
+    }
+
+    // amdWrappedDispatch
+    //
+    // string javascript function used to call ZeroClipboard.dispatch with AMD
+    //
+    // returns string
+    private function amdWrappedDispatch(): String {
+      return ( <![CDATA[
+        (function (event, args) {
+          require(["ZeroClipboard"], function (ZeroClipboard) {
+            ZeroClipboard.dispatch(event, args);
+          });
+        })
+      ]]> ).toString();
     }
   }
 }
