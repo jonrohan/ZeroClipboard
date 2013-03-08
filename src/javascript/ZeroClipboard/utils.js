@@ -164,8 +164,20 @@ var _getDOMObjectPosition = function (obj) {
     info.zIndex = parseInt(zi, 10);
   }
 
-  while (obj) {
+  // Use getBoundingClientRect where available (almost everywhere).
+  // See: http://www.quirksmode.org/dom/w3c_cssom.html
+  if (typeof obj.getBoundingClientRect !== 'undefined') {
+    // compute left / top offset (works for position:fixed too)
+    var rect = obj.getBoundingClientRect();
+    // clientLeft/clientTop are to fix IE's 2px offset in standards mode
+    info.left = rect.left + window.pageXOffset - document.documentElement.clientLeft;
+    info.top = rect.top + window.pageYOffset - document.documentElement.clientTop;
+    return info;
+  }
 
+  // If DOM node doesn't have a getBoundingClientRect method
+  // (i.e. in jsdom), fall back to old method
+  while (obj) {
     var borderLeftWidth = parseInt(_getStyle(obj, "borderLeftWidth"), 10);
     var borderTopWidth  = parseInt(_getStyle(obj, "borderTopWidth"), 10);
 

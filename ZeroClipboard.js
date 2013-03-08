@@ -105,6 +105,12 @@
     if (zi && zi != "auto") {
       info.zIndex = parseInt(zi, 10);
     }
+    if (typeof obj.getBoundingClientRect !== "undefined") {
+      var rect = obj.getBoundingClientRect();
+      info.left = rect.left + window.pageXOffset - document.documentElement.clientLeft;
+      info.top = rect.top + window.pageYOffset - document.documentElement.clientTop;
+      return info;
+    }
     while (obj) {
       var borderLeftWidth = parseInt(_getStyle(obj, "borderLeftWidth"), 10);
       var borderTopWidth = parseInt(_getStyle(obj, "borderTopWidth"), 10);
