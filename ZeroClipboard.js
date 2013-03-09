@@ -107,8 +107,12 @@
     }
     if (typeof obj.getBoundingClientRect !== "undefined") {
       var rect = obj.getBoundingClientRect();
-      info.left = rect.left + window.pageXOffset - document.documentElement.clientLeft;
-      info.top = rect.top + window.pageYOffset - document.documentElement.clientTop;
+      var pageXOffset = window.pageXOffset || document.documentElement.scrollLeft || 0;
+      var pageYOffset = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var leftBorderWidth = document.documentElement.clientLeft || 0;
+      var topBorderWidth = document.documentElement.clientTop || 0;
+      info.left = rect.left + pageXOffset - leftBorderWidth;
+      info.top = rect.top + pageYOffset - topBorderWidth;
       return info;
     }
     while (obj) {
