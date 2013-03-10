@@ -22,8 +22,8 @@ package {
     // The text in the clipboard
     private var clipText:String = "";
 
-    // Use wrapped function if AMD is being used, otherwise use the global ZeroClipboard
-    private var externalDispatch:String = isAMD() ? amdWrappedDispatch() : 'ZeroClipboard.dispatch';
+    // function through which JavaScript events are dispatched
+    private var externalDispatch:String = 'ZeroClipboard.dispatch';
 
     // constructor, setup event listeners and external interfaces
     public function ZeroClipboard() {
@@ -38,6 +38,10 @@ package {
       // Allow the swf object to be run on any domain, for when the site hosts the file on a separate server
       if (flashvars.trustedDomain) {
         flash.system.Security.allowDomain(flashvars.trustedDomain.split("\\").join("\\\\"));
+      }
+
+      if (flashvars.amdModuleName) {
+        externalDispatch = amdWrappedDispatch(flashvars.amdModuleName, flashvars.amdLoaderName);
       }
 
       // invisible button covers entire stage
@@ -189,28 +193,17 @@ package {
       button.height = height;
     }
 
-    // isAMD
-    //
-    // determines if AMD is being used
-    //
-    // returns boolean
-    private function isAMD(): Boolean {
-      return ExternalInterface.call( '(function () { return typeof define === "function" && define.amd; })');
-    }
-
     // amdWrappedDispatch
     //
     // string javascript function used to call ZeroClipboard.dispatch with AMD
     //
     // returns string
-    private function amdWrappedDispatch(): String {
-      return ( <![CDATA[
-        (function (event, args) {
-          require(["ZeroClipboard"], function (ZeroClipboard) {
-            ZeroClipboard.dispatch(event, args);
-          });
-        })
-      ]]> ).toString();
+    private function amdWrappedDispatch(amdModuleName:String, amdLoaderName:String): String {
+      return  '(function (event, args) {' +
+                amdLoaderName + '(["' + amdModuleName + '"], function (ZeroClipboard) { \
+                  ZeroClipboard.dispatch(event, args); \
+                }); \
+              })';
     }
   }
 }
