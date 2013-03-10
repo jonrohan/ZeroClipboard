@@ -50,7 +50,9 @@ var _defaults = {
   trustedDomains:    undefined,                  // Domains that we should trust (single string or array of strings)
   hoverClass:        "zeroclipboard-is-hover",   // The class used to hover over the object
   activeClass:       "zeroclipboard-is-active",  // The class used to set object active
-  allowScriptAccess: "sameDomain"                // SWF outbound scripting policy
+  allowScriptAccess: "sameDomain",               // SWF outbound scripting policy
+  amdModuleName:     null,                       // AMD module ID or path
+  amdLoaderName:     "require"                   // AMD loader function name
 };
 ```
 You can override the defaults using `ZeroClipboard.setDefaults({ moviePath: "new/path" })` before you create any clients.
@@ -463,17 +465,26 @@ Here is a complete example which exercises every option and event handler:
 
 ## AMD
 
-If using AMD, such as RequireJS, note that the SWF file relies on a hard-coded path of 'ZeroClipboard' defined for ZeroClipboard.js. Either put ZeroClipboard.js in the root of your RequireJS base path or configure the path like so:
+If using AMD, with a library such as RequireJS or curl, you must configure ZeroClipboard with the `amdModuleName` set to the path of the ZeroClipboard JavaScript file. For example:
 
 ```
-  requirejs.config({
-    paths: {
-      'ZeroClipboard': 'path/to/ZeroClipboard'
-    }
-  });
+define(['path/to/zero-clipboard'], function (ZeroClipboard) {
+	ZeroClipboard.setDefaults({
+		amdModuleName: 'path/to/zero-clipboard'
+	});
+});
 ```
 
-Alternatively, you can update the hard-coded value in the ZeroClipboard.as source file and re-build the SWF file by running `make`.
+By default, ZeroClipboard expects a global function `require` to exist, but if you are using an AMD library that uses a different global for requiring files, you can set it with the `amdLoaderName` option, like so:
+
+```
+define(['path/to/zero-clipboard'], function (ZeroClipboard) {
+	ZeroClipboard.setDefaults({
+		amdModuleName: 'path/to/zero-clipboard',
+		amdLoaderName: 'curl'
+	});
+});
+```
 
 ## Browser Support
 
