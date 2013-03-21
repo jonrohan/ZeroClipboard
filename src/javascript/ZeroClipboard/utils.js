@@ -10,7 +10,7 @@ var _getStyle = function (el, prop) {
   if (el.currentStyle)
     y = el.currentStyle[prop];
   else if (window.getComputedStyle)
-    y = document.defaultView.getComputedStyle(el, null).getPropertyValue(prop);
+    y = document.defaultView.getComputedStyle(el, null).getPropertyValue(prop.replace(/([A-Z])/g, "-$1").toLowerCase());
 
   if (y == "auto" && prop == "cursor") {
     var possiblePointers = ["a"];
