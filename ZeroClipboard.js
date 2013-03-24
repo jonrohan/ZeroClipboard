@@ -128,6 +128,10 @@
         str.push("trustedDomain=" + options.trustedDomains.join(","));
       }
     }
+    if (options.amdModuleName) {
+      str.push("amdModuleName=" + options.amdModuleName);
+      str.push("amdLoaderName=" + options.amdLoaderName);
+    }
     return str.join("&");
   };
   var _inArray = function(elem, array) {
@@ -187,7 +191,9 @@
     text: null,
     hoverClass: "zeroclipboard-is-hover",
     activeClass: "zeroclipboard-is-active",
-    allowScriptAccess: "sameDomain"
+    allowScriptAccess: "sameDomain",
+    amdModuleName: null,
+    amdLoaderName: "require"
   };
   ZeroClipboard.setDefaults = function(options) {
     for (var ko in options) _defaults[ko] = options[ko];

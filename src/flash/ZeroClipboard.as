@@ -22,6 +22,9 @@ package {
     // The text in the clipboard
     private var clipText:String = "";
 
+    // function through which JavaScript events are dispatched
+    private var externalDispatch:String = 'ZeroClipboard.dispatch';
+
     // constructor, setup event listeners and external interfaces
     public function ZeroClipboard() {
 
@@ -35,6 +38,10 @@ package {
       // Allow the swf object to be run on any domain, for when the site hosts the file on a separate server
       if (flashvars.trustedDomain) {
         flash.system.Security.allowDomain(flashvars.trustedDomain.split("\\").join("\\\\"));
+      }
+
+      if (flashvars.amdModuleName) {
+        externalDispatch = amdWrappedDispatch(flashvars.amdModuleName, flashvars.amdLoaderName);
       }
 
       // invisible button covers entire stage
@@ -59,7 +66,7 @@ package {
       ExternalInterface.addCallback("setSize", setSize);
 
       // signal to the browser that we are ready
-      ExternalInterface.call( 'ZeroClipboard.dispatch', 'load', metaData());
+      ExternalInterface.call( externalDispatch, 'load', metaData());
     }
 
     // mouseClick
@@ -77,7 +84,7 @@ package {
       flash.system.System.setClipboard(clipText);
 
       // signal to the page it is done
-      ExternalInterface.call( 'ZeroClipboard.dispatch', 'complete',  metaData(event, {
+      ExternalInterface.call( externalDispatch, 'complete',  metaData(event, {
         text: clipText.split("\\").join("\\\\")
       }));
 
@@ -91,7 +98,7 @@ package {
     //
     // returns nothing
     private function mouseOver(event:MouseEvent): void {
-      ExternalInterface.call( 'ZeroClipboard.dispatch', 'mouseOver', metaData(event) );
+      ExternalInterface.call( externalDispatch, 'mouseOver', metaData(event) );
     }
 
     // mouseOut
@@ -100,7 +107,7 @@ package {
     //
     // returns nothing
     private function mouseOut(event:MouseEvent): void {
-      ExternalInterface.call( 'ZeroClipboard.dispatch', 'mouseOut', metaData(event) );
+      ExternalInterface.call( externalDispatch, 'mouseOut', metaData(event) );
     }
 
     // mouseDown
@@ -109,13 +116,13 @@ package {
     //
     // returns nothing
     private function mouseDown(event:MouseEvent): void {
-      ExternalInterface.call( 'ZeroClipboard.dispatch', 'mouseDown', metaData(event) );
+      ExternalInterface.call( externalDispatch, 'mouseDown', metaData(event) );
 
       // if the clipText hasn't been set
       if (!clipText) {
 
         // request data from the page
-        ExternalInterface.call( 'ZeroClipboard.dispatch', 'dataRequested', metaData(event) );
+        ExternalInterface.call( externalDispatch, 'dataRequested', metaData(event) );
       }
     }
 
@@ -125,7 +132,7 @@ package {
     //
     // returns nothing
     private function mouseUp(event:MouseEvent): void {
-      ExternalInterface.call( 'ZeroClipboard.dispatch', 'mouseUp', metaData(event) );
+      ExternalInterface.call( externalDispatch, 'mouseUp', metaData(event) );
     }
 
     // metaData
@@ -184,6 +191,19 @@ package {
     public function setSize(width:Number, height:Number): void {
       button.width = width;
       button.height = height;
+    }
+
+    // amdWrappedDispatch
+    //
+    // string javascript function used to call ZeroClipboard.dispatch with AMD
+    //
+    // returns string
+    private function amdWrappedDispatch(amdModuleName:String, amdLoaderName:String): String {
+      return  '(function (event, args) {' +
+                amdLoaderName + '(["' + amdModuleName + '"], function (ZeroClipboard) { \
+                  ZeroClipboard.dispatch(event, args); \
+                }); \
+              })';
     }
   }
 }

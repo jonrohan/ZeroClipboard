@@ -50,7 +50,9 @@ var _defaults = {
   trustedDomains:    undefined,                  // Domains that we should trust (single string or array of strings)
   hoverClass:        "zeroclipboard-is-hover",   // The class used to hover over the object
   activeClass:       "zeroclipboard-is-active",  // The class used to set object active
-  allowScriptAccess: "sameDomain"                // SWF outbound scripting policy
+  allowScriptAccess: "sameDomain",               // SWF outbound scripting policy
+  amdModuleName:     null,                       // AMD module ID or path
+  amdLoaderName:     "require"                   // AMD loader function name
 };
 ```
 You can override the defaults using `ZeroClipboard.setDefaults({ moviePath: "new/path" })` before you create any clients.
@@ -459,6 +461,29 @@ Here is a complete example which exercises every option and event handler:
     </script>
   </body>
   </html>
+```
+
+## AMD
+
+If using AMD, with a library such as RequireJS or curl, you must configure ZeroClipboard with the `amdModuleName` set to the path of the ZeroClipboard JavaScript file. For example:
+
+```
+define(['path/to/zero-clipboard'], function (ZeroClipboard) {
+	ZeroClipboard.setDefaults({
+		amdModuleName: 'path/to/zero-clipboard'
+	});
+});
+```
+
+By default, ZeroClipboard expects a global function `require` to exist, but if you are using an AMD library that uses a different global for requiring files, you can set it with the `amdLoaderName` option, like so:
+
+```
+define(['path/to/zero-clipboard'], function (ZeroClipboard) {
+	ZeroClipboard.setDefaults({
+		amdModuleName: 'path/to/zero-clipboard',
+		amdLoaderName: 'curl'
+	});
+});
 ```
 
 ## Browser Support

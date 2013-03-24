@@ -209,6 +209,12 @@ var _vars = function (options) {
     }
   }
 
+  // if amdModuleName is set
+  if (options.amdModuleName) {
+    str.push("amdModuleName=" + options.amdModuleName);
+    str.push("amdLoaderName=" + options.amdLoaderName);
+  }
+
   // join the str by &
   return str.join("&");
 };
