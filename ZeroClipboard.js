@@ -207,6 +207,9 @@
   ZeroClipboard.detectFlashSupport = function() {
     var hasFlash = false;
     try {
+      if (typeof ActiveXObject == 'undefined') {
+          throw "error";
+      }
       if (new ActiveXObject("ShockwaveFlash.ShockwaveFlash")) {
         hasFlash = true;
       }
