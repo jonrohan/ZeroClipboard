@@ -13,13 +13,18 @@ ZeroClipboard.dispatch = function (eventName, args) {
  *
  * returns nothing
  */
-ZeroClipboard.prototype.on = function (eventName, func) {
+ZeroClipboard.prototype.on = function (eventName, func, namespace) {
   // add user event listener for event
   // event types: load, queueStart, fileStart, fileComplete, queueComplete, progress, error, cancel
   var events = eventName.toString().split(/\s/g);
   for (var i = 0; i < events.length; i++) {
     eventName = events[i].toLowerCase().replace(/^on/, '');
-    if (!this.handlers[eventName]) this.handlers[eventName] = func;
+    if (namespace) {
+      this.handlers[namespace] = this.handlers[namespace] || {};
+      if (!this.handlers[namespace][eventName]) this.handlers[namespace][eventName] = func;
+    } else {
+      if (!this.handlers[eventName]) this.handlers[eventName] = func;
+    }
   }
 
   // If we don't have flash, tell an adult
@@ -35,14 +40,15 @@ ZeroClipboard.prototype.addEventListener = ZeroClipboard.prototype.on;
  *
  * returns nothing
  */
-ZeroClipboard.prototype.off = function (eventName, func) {
+ZeroClipboard.prototype.off = function (eventName, func, namespace) {
   // remove user event listener for event
   var events = eventName.toString().split(/\s/g);
   for (var i = 0; i < events.length; i++) {
     eventName = events[i].toLowerCase().replace(/^on/, "");
-    for (var event in this.handlers) {
-      if (event === eventName && this.handlers[event] === func) {
-        delete this.handlers[event];
+    var handlers = namespace ? this.handlers[namespace] : this.handlers;
+    for (var event in handlers) {
+      if (event === eventName && handlers[event] === func) {
+        delete handlers[event];
       }
     }
   }
@@ -108,10 +114,10 @@ ZeroClipboard.prototype.receiveEvent = function (eventName, args) {
     break;
   } // switch eventName
 
-  if (this.handlers[eventName]) {
+  //look for element-specific handlers first
+  var func = element && this.handlers[element.id] ? this.handlers[element.id][eventName] : this.handlers[eventName];
 
-    var func = this.handlers[eventName];
-
+  if (func !== null) {
     if (typeof(func) == 'function') {
       // actual function reference
       func.call(element, this, args);

@@ -115,7 +115,7 @@ exports.event = {
 
     test.done();
   },
-  
+
   "Unregistering two events works": function (test) {
 
     var func = function(){};
@@ -221,6 +221,73 @@ exports.event = {
     zeroClipboard.dispatch("mouseup", { flashVersion: "MAC 11,0,0" });
     zeroClipboard.dispatch("complete", { flashVersion: "MAC 11,0,0" });
     zeroClipboard.dispatch("mouseout", { flashVersion: "MAC 11,0,0" });
+  },
+
+  "Registering namespaced events": function (test) {
+    clip.on("load",function(){},'namespace');
+    clip.on("onNoFlash",function(){},'namespace');
+    clip.on("onPhone",function(){},'namespace');
+
+    test.ok(!clip.handlers.load);
+    test.ok(!clip.handlers.noflash);
+    test.ok(!clip.handlers.phone);
+
+    test.ok(clip.handlers.namespace.load);
+    test.ok(clip.handlers.namespace.noflash);
+    test.ok(clip.handlers.namespace.phone);
+
+    test.done();
+  },
+
+  "Unregistering namespaced events": function (test) {
+    var load = function(){};
+    var onNoFlash = function(){};
+    var onPhone = function(){};
+
+    clip.on("load",load,'d_clip_button');
+    clip.on("onNoFlash",onNoFlash,'d_clip_button');
+    clip.on("onPhone",onPhone,'d_clip_button');
+
+    clip.off("load",load,'d_clip_button');
+    test.ok(!clip.handlers.d_clip_button.load);
+
+    clip.off("onNoFlash",onNoFlash,'d_clip_button');
+    test.ok(!clip.handlers.d_clip_button.noflash);
+
+    clip.off("onPhone",onPhone,'d_clip_button');
+    test.ok(!clip.handlers.d_clip_button.phone);
+
+    test.done();
+  },
+
+  "Test when namespace passed appropriate handler is called": function (test) {
+      var clip2 = new zeroClipboard();
+      clip.glue($("#d_clip_button"));
+      clip2.glue($("#d_clip_button2"));
+
+      clip.on('load mousedown mouseover mouseup wrongflash noflash complete mouseout', function(client, args){
+        test.done(new Error('This non-namespaced event handler should not be called'));
+      });
+
+      clip2.on('load mousedown mouseover mouseup wrongflash noflash complete', function(client, args){
+        test.equal(this.id, "d_clip_button2");
+      },'d_clip_button2');
+
+      clip2.on('mouseout', function(client,args){
+        test.equal(this.id, "d_clip_button2");
+        test.done();
+      },'d_clip_button2');
+
+      clip.setCurrent($("#d_clip_button2")[0]);
+
+      zeroClipboard.dispatch("load", { flashVersion: "MAC 11,0,0" });
+      zeroClipboard.dispatch("wrongflash", { flashVersion: "MAC 11,0,0" });
+      zeroClipboard.dispatch("noflash", { flashVersion: "MAC 11,0,0" });
+      zeroClipboard.dispatch("mousedown", { flashVersion: "MAC 11,0,0" });
+      zeroClipboard.dispatch("mouseover", { flashVersion: "MAC 11,0,0" });
+      zeroClipboard.dispatch("mouseup", { flashVersion: "MAC 11,0,0" });
+      zeroClipboard.dispatch("complete", { flashVersion: "MAC 11,0,0" });
+      zeroClipboard.dispatch("mouseout", { flashVersion: "MAC 11,0,0" });
   },
 
 }
