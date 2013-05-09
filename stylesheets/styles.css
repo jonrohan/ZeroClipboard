@@ -408,3 +408,9 @@ footer {
     color:#444;
   }
 }
+
+.warning {
+  font-weight: bold;
+  font-style: italic;
+  color: #FF0000;
+}
