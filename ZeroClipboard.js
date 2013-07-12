@@ -133,7 +133,7 @@
     if (zi && zi !== "auto") {
       info.zIndex = parseInt(zi, 10);
     }
-    if (typeof obj.getBoundingClientRect === "function") {
+    if (obj.getBoundingClientRect) {
       var rect = obj.getBoundingClientRect();
       var pageXOffset, pageYOffset, zoomFactor;
       if ("pageXOffset" in window && "pageYOffset" in window) {
@@ -148,8 +148,8 @@
       var topBorderWidth = document.documentElement.clientTop || 0;
       info.left = rect.left + pageXOffset - leftBorderWidth;
       info.top = rect.top + pageYOffset - topBorderWidth;
-      info.width = rect.width;
-      info.height = rect.height;
+      info.width = rect.width ? rect.width : rect.right - rect.left;
+      info.height = rect.height ? rect.height : rect.bottom - rect.top;
     }
     return info;
   };
