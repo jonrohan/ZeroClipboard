@@ -25,7 +25,12 @@ var ZeroClipboard = function (elements, options) {
   this.handlers = {};
 
   // setup the flash->Javascript bridge
-  if (ZeroClipboard.detectFlashSupport()) _bridge();
+  if (ZeroClipboard.detectFlashSupport()) {
+     _bridge();
+  } else {
+    // if flash doesn't exist, we don't want the bridge to fire mouseovers, it doesn't need to exist anymore.
+     ZeroClipboard.prototype._singleton.destroy()
+  }
 
 };
 
