@@ -173,3 +173,12 @@ ZeroClipboard.prototype.unglue = function (elements) {
   }
 
 };
+
+/*
+ * Check if the HTML bridge is off screen after scrolling
+ *
+ * returns nothing
+ */
+window.onscroll = function(e) {
+  ZeroClipboard.prototype._singleton.checkBounds();
+};
