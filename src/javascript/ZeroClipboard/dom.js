@@ -119,3 +119,25 @@ ZeroClipboard.prototype.reposition = function () {
 
   this.setSize(pos.width, pos.height);
 };
+
+/*
+ * Reset the html bridge if drawn on the page but beyond the visible boundaries
+ *
+ * returns nothing
+ */
+ZeroClipboard.prototype.checkBounds = function() {
+  if (typeof currentElement !== "undefined") {
+    if (this.htmlBridge.offsetTop > (window.scrollY + window.innerHeight)) {
+      this.resetBridge();
+    }
+    else if (this.htmlBridge.offsetTop < window.scrollY && this.htmlBridge.offsetTop > 0) {
+      this.resetBridge();
+    }
+    else if (this.htmlBridge.offsetLeft > (window.scrollX + window.innerWidth)) {
+      this.resetBridge();
+    }
+    else if (this.htmlBridge.offsetLeft < window.scrollX && this.htmlBridge.offsetLeft > 0) {
+      this.resetBridge();
+    }
+  }
+};

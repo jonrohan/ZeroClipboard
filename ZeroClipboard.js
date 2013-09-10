@@ -343,6 +343,19 @@
     this.htmlBridge.style.zIndex = pos.zIndex + 1;
     this.setSize(pos.width, pos.height);
   };
+  ZeroClipboard.prototype.checkBounds = function() {
+    if (typeof currentElement !== "undefined") {
+      if (this.htmlBridge.offsetTop > window.scrollY + window.innerHeight) {
+        this.resetBridge();
+      } else if (this.htmlBridge.offsetTop < window.scrollY && this.htmlBridge.offsetTop > 0) {
+        this.resetBridge();
+      } else if (this.htmlBridge.offsetLeft > window.scrollX + window.innerWidth) {
+        this.resetBridge();
+      } else if (this.htmlBridge.offsetLeft < window.scrollX && this.htmlBridge.offsetLeft > 0) {
+        this.resetBridge();
+      }
+    }
+  };
   ZeroClipboard.dispatch = function(eventName, args) {
     ZeroClipboard.prototype._singleton.receiveEvent(eventName, args);
   };
@@ -443,6 +456,9 @@
       var arrayIndex = _inArray(elements[i], gluedElements);
       if (arrayIndex != -1) gluedElements.splice(arrayIndex, 1);
     }
+  };
+  window.onscroll = function(e) {
+    ZeroClipboard.prototype._singleton.checkBounds();
   };
   if (typeof define === "function" && define.amd) {
     define([ "require", "exports", "module" ], function(require, exports, module) {
