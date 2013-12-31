@@ -107,6 +107,21 @@ ZeroClipboard.prototype.setSize = function (width, height) {
 };
 
 /*
+ * Sends an emulated click event provided with a token to emulate a click securely
+ *
+ * returns object instanace
+ */
+ZeroClipboard.prototype.emulateClick = function (token) {
+  if (!token) {
+    console.error('A Token must be provided to emulate a click');
+  }
+  else {
+    if (this.ready()) this.flashBridge.emulateClick(token);
+  }
+  return this;
+};
+
+/*
  * @private
  *
  * Sends a signal to the flash object to display the hand cursor if true.

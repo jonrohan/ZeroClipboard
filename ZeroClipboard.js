@@ -426,6 +426,14 @@
     if (this.ready()) this.flashBridge.setSize(width, height);
     return this;
   };
+  ZeroClipboard.prototype.emulateClick = function(token) {
+    if (!token) {
+      console.error("A Token must be provided to emulate a click");
+    } else {
+      if (this.ready()) this.flashBridge.emulateClick(token);
+    }
+    return this;
+  };
   var _setHandCursor = function(enabled) {
     if (this.ready()) this.flashBridge.setHandCursor(enabled);
   };
@@ -452,6 +460,7 @@
     moviePath: "ZeroClipboard.swf",
     trustedDomains: [ window.location.host ],
     text: null,
+    token: null,
     useNoCache: true,
     forceHandCursor: false,
     zIndex: 999999999,
