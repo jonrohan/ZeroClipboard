@@ -6,6 +6,7 @@ var _defaults = {
 
   /** @private */
   text:              null,                       // The text to be copied
+  token:             null,                       // The nonce token for security in emulating click events
 
   useNoCache:        true,                       // Include a nocache query parameter on requests for the SWF
   forceHandCursor:   false,                      // Forcibly set the hand cursor ("pointer") for all glued elements
