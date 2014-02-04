@@ -768,6 +768,9 @@
           func = func.handleEvent;
         }
         if (typeof func === "function") {
+          if (eventName === "complete" && typeof context.focus === "function") {
+            context.focus();
+          }
           _dispatchCallback(func, context, args, async);
         }
       }
