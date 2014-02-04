@@ -154,6 +154,10 @@ var _dispatchClientCallbacks = function(eventName, context, args, async) {
         func = func.handleEvent;
       }
       if (typeof func === 'function') {
+        // focus the context (blur the flash element)
+        if (eventName === "complete" && typeof context.focus === "function") {
+          context.focus();
+        }
         // actual function reference
         _dispatchCallback(func, context, args, async);
       }
