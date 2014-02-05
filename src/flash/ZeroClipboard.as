@@ -5,8 +5,9 @@ package {
   import flash.display.LoaderInfo;
   import flash.events.*;
   import flash.external.ExternalInterface;
-  import flash.utils.*;
+  import flash.net.URLVariables;
   import flash.system.Capabilities;
+  import flash.utils.*;
 
   // ZeroClipboard
   //
@@ -44,18 +45,19 @@ package {
       stage.align = "TL";
       stage.scaleMode = "noScale";
 
-      // Get the flashvars
-      var flashvars:Object = LoaderInfo( this.root.loaderInfo ).parameters;
+      // Get the FlashVars, filtering out all URL query parameters
+      var loaderInfo:LoaderInfo = LoaderInfo(this.root.loaderInfo);
+      var flashVars:Object = ZeroClipboard.getFlashVars(loaderInfo.parameters, loaderInfo.url);
 
       // Allow the SWF object to communicate with a page on a different origin than its own (e.g. SWF served from CDN)
-      if (flashvars.trustedOrigins && typeof flashvars.trustedOrigins === "string") {
-        var origins:Array = ZeroClipboard.sanitizeString(flashvars.trustedOrigins).split(",");
+      if (flashVars.trustedOrigins && typeof flashVars.trustedOrigins === "string") {
+        var origins:Array = flashVars.trustedOrigins.split(",");
         flash.system.Security.allowDomain.apply(null, origins);
       }
 
       // Enable complete AMD (e.g. RequireJS) and CommonJS (e.g. Browserify) support
-      if (flashvars.jsModuleId && typeof flashvars.jsModuleId === "string") {
-        jsModuleId = ZeroClipboard.sanitizeString(flashvars.jsModuleId);
+      if (flashVars.jsModuleId && typeof flashVars.jsModuleId === "string") {
+        jsModuleId = flashVars.jsModuleId;
       }
 
       // invisible button covers entire stage
@@ -228,6 +230,63 @@ package {
       }
 
       return normalOptions;
+    }
+
+    // parseQuery
+    //
+    // Parse a URL's query string into a hash map object
+    //
+    // returns Object (hash map of query string)
+    private static function parseQuery(url:String): Object {
+      var query:Object = null;
+      if (url) {
+        // Just get the stuff after the query delimiter
+        var index:Number = url.indexOf("?");
+        url = index !== -1 ? url.slice(index + 1) : "";
+
+        //
+        // Try to achieve parity with `LoaderInfo#parameters`
+        //
+        // Eliminate invalid URL escapes. This can prevent a lot of XSS hacks.
+        url = url.replace(/%[A-Fa-f0-9]?([^A-Fa-f0-9]|$)/g, "");
+        // Double-encode the NUL (null) character. In Firefox, this character actually prevents Flash from loading the SWF at all.
+        url = url.replace(/%00/g, "%2500");
+        // Eliminate extraneous ampersands
+        url = url.replace(/&&+/g, "&");
+
+        if (url) {
+          query = new URLVariables(url);
+
+          // If any query with multiple of the same key present, only take the last value
+          for (var key:String in query) {
+            if (query.hasOwnProperty(key) && query[key] is Array && query[key].length) {
+              query[key] = query[key].pop() as String;
+            }
+          }
+        }
+      }
+      return query;
+    }
+
+    // getFlashVars
+    // 
+    // Does a symmetric "except" (non-intersect) to filter query params from the `LoaderInfo.parameters`, leaving only FlashVars.
+    //
+    // returns Object (the actual FlashVars)
+    private static function getFlashVars(loaderInfoParameters:Object, swfUrl:String): Object {
+      var flashVars:Object = {};
+      var queryParams:Object = ZeroClipboard.parseQuery(swfUrl);
+      if (queryParams) {
+        for (var key:String in loaderInfoParameters) {
+          if (loaderInfoParameters.hasOwnProperty(key)) {
+            var value:String = ZeroClipboard.sanitizeString(loaderInfoParameters[key] as String);
+            if (!(queryParams.hasOwnProperty(key) && ZeroClipboard.sanitizeString(queryParams[key] as String) === value)) {
+              flashVars[key] = value;
+            }
+          }
+        }
+      }
+      return flashVars;
     }
   }
 }
