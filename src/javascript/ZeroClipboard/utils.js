@@ -303,6 +303,8 @@ var _vars = function (options) {
       if (domains.hasOwnProperty(i) && domains[i] && typeof domains[i] === "string") {
         domain = _extractDomain(domains[i]);
 
+        _log("Trusted domain: " + domain, options.debug);
+
         if (!domain) {
           continue;
         }
@@ -435,20 +437,32 @@ var _getSafeZIndex = function (val) {
 
 /*
  * private _deprecationWarning
- * If `console` is available, issue a `console.warn`/`console.log` warning against the use of
- * deprecated methods.
+ * Issue a warning against the use of deprecated methods.
  *
  * returns void
  */
 var _deprecationWarning = function(deprecatedApiName, debugEnabled) {
-  if (deprecatedApiName && debugEnabled !== false && typeof console !== "undefined" && console && (console.warn || console.log)) {
+  if (deprecatedApiName) {
     var deprecationWarning = "`" + deprecatedApiName + "` is deprecated. See docs for more info:\n" +
           "    https://github.com/zeroclipboard/zeroclipboard/blob/master/docs/instructions.md#deprecations";
+    _log(deprecationWarning, debugEnabled);
+  }
+};
+
+
+/*
+ * private _log
+ * If `console` is available, issue a `console.warn`/`console.log` message
+ *
+ * returns void
+ */
+var _log = function(message, debugEnabled) {
+  if (message && debugEnabled !== false && typeof console !== "undefined" && console && (console.warn || console.log)) {
     if (console.warn) {
-      console.warn(deprecationWarning);
+      console.warn(message);
     }
     else {
-      console.log(deprecationWarning);
+      console.log(message);
     }
   }
 };
