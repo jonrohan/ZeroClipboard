@@ -145,7 +145,7 @@ If your ZeroClipboard SWF is served from a different origin/domain than your pag
 OK to trust your page. The default value of `[window.location.host]` is almost _**always**_ what you will want unless
 you specifically want the SWF to communicate with pages from other domains (e.g. in iframes or child windows).
 
-For more information about trusted domains, consult the _[official Flash documentation for `flash.system.Security.allowDomain(...)`](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/system/Security.html#allowDomain\(\))_.
+For more information about trusted domains, consult the *[official Flash documentation for `flash.system.Security.allowDomain(...)`](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/system/Security.html#allowDomain\(\))*.
 
 
 ### The `allowScriptAccess` option: SWF outbound scripting access
