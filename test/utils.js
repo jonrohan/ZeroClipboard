@@ -123,8 +123,7 @@
     // Arrange
     var clipOptionsEmpty = {};
     var clipOptionsTrustedDomainsOnly = {
-      trustedDomains: ["*"],
-      debug: false
+      trustedDomains: ["*"]
     };
     var clipOptionsAmdOnly = {
       jsModuleId: "zcAMD"
@@ -134,8 +133,7 @@
     };
     var clipOptionsAll = {
       trustedDomains: ["*"],
-      jsModuleId: "zcAMD",
-      debug: false
+      jsModuleId: "zcAMD"
     };
 
     // Act & Assert

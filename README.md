@@ -41,6 +41,8 @@ See the [instructions](docs/instructions.md) for more advanced options in using 
 
 Here is a working [test page](http://zeroclipboard.org/#demo) where you can try out ZeroClipboard in your browser.
 
+See this [jsfiddle](http://jsfiddle.net/rimian/45Nnv/) too. It uses [cdn content](http://cdnjs.com/libraries/zeroclipboard/).
+
 
 ## Testing ZeroClipboard Locally
 
