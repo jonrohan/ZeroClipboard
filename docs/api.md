@@ -2,8 +2,8 @@
 
 A list of the ZeroClipboard instance API
 
-#### config
+#### .config
 ZeroClipboard.config(); Creates defaults for ZeroClipboard instance.
 
-#### destroy
+#### .destroy
 ZeroClipboard.destroy(); Destroys instance of ZeroClipboard.
