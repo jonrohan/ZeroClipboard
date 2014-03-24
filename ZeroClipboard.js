@@ -222,7 +222,7 @@
     return info;
   };
   var _cacheBust = function(path, options) {
-    var cacheBust = options == null || options && options.cacheBust === true && options.useNoCache === true;
+    var cacheBust = options == null || options && options.cacheBust === true;
     if (cacheBust) {
       return (path.indexOf("?") === -1 ? "?" : "&") + "noCache=" + new Date().getTime();
     } else {
@@ -230,22 +230,15 @@
     }
   };
   var _vars = function(options) {
-    var i, len, domain, str = [], domains = [], trustedOriginsExpanded = [];
-    if (options.trustedOrigins) {
-      if (typeof options.trustedOrigins === "string") {
-        domains.push(options.trustedOrigins);
-      } else if (typeof options.trustedOrigins === "object" && "length" in options.trustedOrigins) {
-        domains = domains.concat(options.trustedOrigins);
-      }
-    }
+    var i, len, domain, domains, str = [], trustedOriginsExpanded = [];
     if (options.trustedDomains) {
       if (typeof options.trustedDomains === "string") {
-        domains.push(options.trustedDomains);
+        domains = [ options.trustedDomains ];
       } else if (typeof options.trustedDomains === "object" && "length" in options.trustedDomains) {
-        domains = domains.concat(options.trustedDomains);
+        domains = options.trustedDomains;
       }
     }
-    if (domains.length) {
+    if (domains && domains.length) {
       for (i = 0, len = domains.length; i < len; i++) {
         if (domains.hasOwnProperty(i) && domains[i] && typeof domains[i] === "string") {
           domain = _extractDomain(domains[i]);
@@ -396,16 +389,7 @@
         }
       }
     };
-    var _accessLevelLookup = {
-      always: "always",
-      samedomain: "sameDomain",
-      never: "never"
-    };
     return function(currentDomain, configOptions) {
-      var asaLower, allowScriptAccess = configOptions.allowScriptAccess;
-      if (typeof allowScriptAccess === "string" && (asaLower = allowScriptAccess.toLowerCase()) && /^always|samedomain|never$/.test(asaLower)) {
-        return _accessLevelLookup[asaLower];
-      }
       var swfDomain = _extractDomain(configOptions.swfPath);
       if (swfDomain === null) {
         swfDomain = currentDomain;
@@ -526,9 +510,9 @@
     flashState.pluginType = isPPAPI ? "pepper" : isActiveX ? "activex" : hasFlash ? "netscape" : "unknown";
   };
   _detectFlashSupport();
-  var ZeroClipboard = function(elements, options) {
+  var ZeroClipboard = function(elements) {
     if (!(this instanceof ZeroClipboard)) {
-      return new ZeroClipboard(elements, options);
+      return new ZeroClipboard(elements);
     }
     this.id = "" + clientIdCounter++;
     _clientMeta[this.id] = {
@@ -539,11 +523,6 @@
     if (elements) {
       this.clip(elements);
     }
-    if (typeof options !== "undefined") {
-      _deprecationWarning("new ZeroClipboard(elements, options)", _globalConfig.debug);
-      ZeroClipboard.config(options);
-    }
-    this.options = ZeroClipboard.config();
     if (typeof flashState.ready !== "boolean") {
       flashState.ready = false;
     }
@@ -932,9 +911,6 @@
   };
   _globalConfig.hoverClass = "zeroclipboard-is-hover";
   _globalConfig.activeClass = "zeroclipboard-is-active";
-  _globalConfig.trustedOrigins = null;
-  _globalConfig.allowScriptAccess = null;
-  _globalConfig.useNoCache = true;
   ZeroClipboard.dispatch = function(eventName, args) {
     if (typeof eventName === "string" && eventName) {
       var cleanEventName = eventName.toLowerCase().replace(/^on/, "");
@@ -945,63 +921,6 @@
         }
       }
     }
-  };
-  ZeroClipboard.prototype.setHandCursor = function(enabled) {
-    _deprecationWarning("ZeroClipboard.prototype.setHandCursor", _globalConfig.debug);
-    enabled = typeof enabled === "boolean" ? enabled : !!enabled;
-    _setHandCursor(enabled);
-    _globalConfig.forceHandCursor = enabled;
-    return this;
-  };
-  ZeroClipboard.prototype.reposition = function() {
-    _deprecationWarning("ZeroClipboard.prototype.reposition", _globalConfig.debug);
-    return _reposition();
-  };
-  ZeroClipboard.prototype.receiveEvent = function(eventName, args) {
-    _deprecationWarning("ZeroClipboard.prototype.receiveEvent", _globalConfig.debug);
-    if (typeof eventName === "string" && eventName) {
-      var cleanEventName = eventName.toLowerCase().replace(/^on/, "");
-      if (cleanEventName) {
-        _receiveEvent.call(this, cleanEventName, args);
-      }
-    }
-  };
-  ZeroClipboard.prototype.setCurrent = function(element) {
-    _deprecationWarning("ZeroClipboard.prototype.setCurrent", _globalConfig.debug);
-    ZeroClipboard.activate(element);
-    return this;
-  };
-  ZeroClipboard.prototype.resetBridge = function() {
-    _deprecationWarning("ZeroClipboard.prototype.resetBridge", _globalConfig.debug);
-    ZeroClipboard.deactivate();
-    return this;
-  };
-  ZeroClipboard.prototype.setTitle = function(newTitle) {
-    _deprecationWarning("ZeroClipboard.prototype.setTitle", _globalConfig.debug);
-    newTitle = newTitle || _globalConfig.title || currentElement && currentElement.getAttribute("title");
-    if (newTitle) {
-      var htmlBridge = _getHtmlBridge(flashState.bridge);
-      if (htmlBridge) {
-        htmlBridge.setAttribute("title", newTitle);
-      }
-    }
-    return this;
-  };
-  ZeroClipboard.setDefaults = function(options) {
-    _deprecationWarning("ZeroClipboard.setDefaults", _globalConfig.debug);
-    ZeroClipboard.config(options);
-  };
-  ZeroClipboard.prototype.addEventListener = function(eventName, func) {
-    _deprecationWarning("ZeroClipboard.prototype.addEventListener", _globalConfig.debug);
-    return this.on(eventName, func);
-  };
-  ZeroClipboard.prototype.removeEventListener = function(eventName, func) {
-    _deprecationWarning("ZeroClipboard.prototype.removeEventListener", _globalConfig.debug);
-    return this.off(eventName, func);
-  };
-  ZeroClipboard.prototype.ready = function() {
-    _deprecationWarning("ZeroClipboard.prototype.ready", _globalConfig.debug);
-    return flashState.ready === true;
   };
   var _receiveEvent = function(eventName, args) {
     args = args || {};

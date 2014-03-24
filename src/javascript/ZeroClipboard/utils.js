@@ -261,7 +261,7 @@ var _getDOMObjectPosition = function (obj, defaultZIndex) {
  * returns path with noCache param added
  */
 var _cacheBust = function (path, options) {
-  var cacheBust = options == null || (options && options.cacheBust === true && options.useNoCache === true);
+  var cacheBust = options == null || (options && options.cacheBust === true);
   if (cacheBust) {
     return (path.indexOf("?") === -1 ? "?" : "&") + "noCache=" + (new Date()).getTime();
   } else {
@@ -276,29 +276,19 @@ var _cacheBust = function (path, options) {
  * returns flashvars separated by &
  */
 var _vars = function (options) {
-  var i, len, domain,
+  var i, len, domain, domains,
       str = [],
-      domains = [],
       trustedOriginsExpanded = [];
 
-  /** @deprecated `trustedOrigins` in [v1.3.0], slated for removal in [v2.0.0]. See docs for more info. */
-  if (options.trustedOrigins) {
-    if (typeof options.trustedOrigins === "string") {
-      domains.push(options.trustedOrigins);
-    }
-    else if (typeof options.trustedOrigins === "object" && "length" in options.trustedOrigins) {
-      domains = domains.concat(options.trustedOrigins);
-    }
-  }
   if (options.trustedDomains) {
     if (typeof options.trustedDomains === "string") {
-      domains.push(options.trustedDomains);
+      domains = [options.trustedDomains];
     }
     else if (typeof options.trustedDomains === "object" && "length" in options.trustedDomains) {
-      domains = domains.concat(options.trustedDomains);
+      domains = options.trustedDomains;
     }
   }
-  if (domains.length) {
+  if (domains && domains.length) {
     for (i = 0, len = domains.length; i < len; i++) {
       if (domains.hasOwnProperty(i) && domains[i] && typeof domains[i] === "string") {
         domain = _extractDomain(domains[i]);
@@ -566,21 +556,7 @@ var _determineScriptAccess = (function() {
     }
   };
 
-  var _accessLevelLookup = {
-    "always": "always",
-    "samedomain": "sameDomain",
-    "never": "never"
-  };
-
   return function(currentDomain, configOptions) {
-    var asaLower,
-        allowScriptAccess = configOptions.allowScriptAccess;
-
-    if (typeof allowScriptAccess === "string" && (asaLower = allowScriptAccess.toLowerCase()) && /^always|samedomain|never$/.test(asaLower)) {
-      return _accessLevelLookup[asaLower];
-    }
-    // else...
-
     // Get SWF domain
     var swfDomain = _extractDomain(configOptions.swfPath);
     if (swfDomain === null) {

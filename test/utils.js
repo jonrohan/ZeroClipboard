@@ -161,31 +161,18 @@
 
 
   test("`_cacheBust` can be disabled", function(assert) {
-    assert.expect(6);
+    assert.expect(2);
 
     // Arrange
     var pathWithoutQuery = "path.com/z.swf";
     var pathWithQuery = "path.com/z.swf?q=jon";
-    var options1 = {
-      useNoCache: false,
-      cacheBust: true
-    };
-    var options2 = {
-      useNoCache: true,
-      cacheBust: false
-    };
-    var options3 = {
-      useNoCache: false,
+    var options = {
       cacheBust: false
     };
 
     // Act & Assert
-    assert.strictEqual(_cacheBust(pathWithoutQuery, options1), "");
-    assert.strictEqual(_cacheBust(pathWithQuery, options1), "");
-    assert.strictEqual(_cacheBust(pathWithoutQuery, options2), "");
-    assert.strictEqual(_cacheBust(pathWithQuery, options2), "");
-    assert.strictEqual(_cacheBust(pathWithoutQuery, options3), "");
-    assert.strictEqual(_cacheBust(pathWithQuery, options3), "");
+    assert.strictEqual(_cacheBust(pathWithoutQuery, options), "");
+    assert.strictEqual(_cacheBust(pathWithQuery, options), "");
   });
 
 
@@ -381,55 +368,24 @@
     var currentDomain = window.location.host || "localhost";
     var _globalConfig = {
       swfPath: "ZeroClipboard.swf",
-      trustedOrigins: null,
-      trustedDomains: [currentDomain],
-      allowScriptAccess: null
+      trustedDomains: [currentDomain]
     };
     var inputToExpectedMap = [
-      // `allowScriptAccess` forcibly set
-      { args: [currentDomain, _extend({}, _globalConfig, { allowScriptAccess: "always" })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { allowScriptAccess: "ALWAYS" })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { allowScriptAccess: "samedomain" })], result: "sameDomain" },
-      { args: [currentDomain, _extend({}, _globalConfig, { allowScriptAccess: "sameDomain" })], result: "sameDomain" },
-      { args: [currentDomain, _extend({}, _globalConfig, { allowScriptAccess: "SAMEDOMAIN" })], result: "sameDomain" },
-      { args: [currentDomain, _extend({}, _globalConfig, { allowScriptAccess: "never" })], result: "never" },
-      { args: [currentDomain, _extend({}, _globalConfig, { allowScriptAccess: "NEVER" })], result: "never" },
       // Same-domain SWF
       { args: [currentDomain, _globalConfig], result: "sameDomain" },
       { args: [currentDomain, _extend({}, _globalConfig, { trustedDomains: [] })], result: "never" },
       { args: [currentDomain, _extend({}, _globalConfig, { trustedDomains: ["*"] })], result: "always" },
       { args: [currentDomain, _extend({}, _globalConfig, { trustedDomains: [currentDomain, "otherDomain.com"] })], result: "always" },
       { args: [currentDomain, _extend({}, _globalConfig, { trustedDomains: ["otherDomain.com"] })], result: "never" },
-      { args: [currentDomain, _extend({}, _globalConfig, { trustedDomains: [], trustedOrigins: [] })], result: "never" },
-      { args: [currentDomain, _extend({}, _globalConfig, { trustedDomains: [], trustedOrigins: ["*"] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { trustedDomains: [], trustedOrigins: ["http://" + currentDomain] })], result: "sameDomain" },
-      { args: [currentDomain, _extend({}, _globalConfig, { trustedDomains: [], trustedOrigins: ["http://" + currentDomain, "http://otherDomain.com"] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { trustedDomains: [], trustedOrigins: ["http://otherDomain.com"] })], result: "never" },
-      { args: [currentDomain, _extend({}, _globalConfig, { trustedOrigins: [] })], result: "sameDomain" },
-      { args: [currentDomain, _extend({}, _globalConfig, { trustedOrigins: ["*"] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { trustedOrigins: ["http://" + currentDomain] })], result: "sameDomain" },
-      { args: [currentDomain, _extend({}, _globalConfig, { trustedOrigins: ["http://" + currentDomain, "http://otherDomain.com"] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { trustedOrigins: ["http://otherDomain.com"] })], result: "always" },
       // Cross-domain SWF
       { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf" })], result: "always" },
       { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedDomains: [] })], result: "never" },
       { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedDomains: ["*"] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedDomains: [currentDomain, "otherDomain.com"] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedDomains: ["otherDomain.com"] })], result: "never" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedDomains: [], trustedOrigins: [] })], result: "never" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedDomains: [], trustedOrigins: ["*"] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedDomains: [], trustedOrigins: ["http://" + currentDomain] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedDomains: [], trustedOrigins: ["http://" + currentDomain, "http://otherDomain.com"] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedDomains: [], trustedOrigins: ["http://otherDomain.com"] })], result: "never" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedOrigins: [] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedOrigins: ["*"] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedOrigins: ["http://" + currentDomain] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedOrigins: ["http://" + currentDomain, "http://otherDomain.com"] })], result: "always" },
-      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedOrigins: ["http://otherDomain.com"] })], result: "always" }
+      { args: [currentDomain, _extend({}, _globalConfig, { swfPath: "//otherDomain.com/ZeroClipboard.swf", trustedDomains: [currentDomain, "otherDomain.com"] })], result: "always" }
     ];
 
     // Act & Assert
-    assert.expect(inputToExpectedMap.length);
+    assert.expect(9);
     for (i = 0, len = inputToExpectedMap.length; i < len; i++) {
       tmp = inputToExpectedMap[i];
       assert.strictEqual(_determineScriptAccess.apply(this, tmp.args), tmp.result, "Processing: " + JSON.stringify(tmp));
