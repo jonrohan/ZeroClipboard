@@ -91,6 +91,14 @@ var _globalConfig = {
   // themselves instead of relying on our per-element `mouseover` handler
   autoActivate: true,
 
+  // Sets the id of the the `div` encapsulating the Flash object
+  containerId: "global-zeroclipboard-html-bridge",
+
+  // Sets the class of the the `div` encapsulating the Flash object
+  containerClass: "global-zeroclipboard-container",
+
+  // Sets the id and name of the Flash 'object' element
+  flashBridgeName: "global-zeroclipboard-flash-bridge",
 
   /** @deprecated */
   // The class used to indicate that a clipped element is being hovered over

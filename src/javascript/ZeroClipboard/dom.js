@@ -7,7 +7,7 @@ var _bridge = function () {
   var flashBridge, len;
 
   // try and find the current global bridge
-  var container = document.getElementById("global-zeroclipboard-html-bridge");
+  var container = document.getElementById(_globalConfig.containerId);
 
   if (!container) {
     // Get a copy of the `_globalConfig` object to avoid exposing
@@ -26,7 +26,7 @@ var _bridge = function () {
     var flashvars = _vars(opts);
     var swfUrl = _globalConfig.moviePath + _cacheBust(_globalConfig.moviePath, _globalConfig);
     var html = "\
-      <object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" id=\"global-zeroclipboard-flash-bridge\" width=\"100%\" height=\"100%\"> \
+      <object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" id=\"" + _globalConfig.flashBridgeName + "\" width=\"100%\" height=\"100%\"> \
         <param name=\"movie\" value=\"" + swfUrl + "\"/> \
         <param name=\"allowScriptAccess\" value=\"" + allowScriptAccess +  "\"/> \
         <param name=\"scale\" value=\"exactfit\"/> \
@@ -40,7 +40,7 @@ var _bridge = function () {
           loop=\"false\" menu=\"false\" \
           quality=\"best\" bgcolor=\"#ffffff\" \
           width=\"100%\" height=\"100%\" \
-          name=\"global-zeroclipboard-flash-bridge\" \
+          name=\"" + _globalConfig.flashBridgeName + "\" \
           allowScriptAccess=\"" + allowScriptAccess +  "\" \
           allowFullScreen=\"false\" \
           type=\"application/x-shockwave-flash\" \
@@ -52,8 +52,8 @@ var _bridge = function () {
       </object>";
 
     container = document.createElement("div");
-    container.id = "global-zeroclipboard-html-bridge";
-    container.setAttribute("class", "global-zeroclipboard-container");
+    container.id = _globalConfig.containerId;
+    container.setAttribute("class", _globalConfig.containerClass);
     container.style.position = "absolute";
     container.style.left = "0px";
     container.style.top = "-9999px";
@@ -70,7 +70,7 @@ var _bridge = function () {
     container.innerHTML = html;
   }
 
-  flashBridge = document["global-zeroclipboard-flash-bridge"];
+  flashBridge = document[_globalConfig.flashBridgeName];
   if (flashBridge && (len = flashBridge.length)) {
     flashBridge = flashBridge[len - 1];
   }
