@@ -1,2 +1,2 @@
 (function (window) {
-  "use strict";
+  'use strict';
