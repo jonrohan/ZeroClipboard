@@ -43,7 +43,7 @@ directory as your web page, then it will work out of the box.  However, if the S
 to set the URL like this (place this code _after_ the script tag):
 
 ```js
-ZeroClipboard.config( { swfPath: 'http://YOURSERVER/path/ZeroClipboard.swf' } );
+ZeroClipboard.config( { moviePath: 'http://YOURSERVER/path/ZeroClipboard.swf' } );
 ```
 
 
@@ -73,7 +73,7 @@ These are default values for the global configurations options. You should gener
 var _globalConfig = {
   // URL to movie, relative to the page. Default value will be "ZeroClipboard.swf" under the
   // same path as the ZeroClipboard JS file.
-  swfPath: "path/to/ZeroClipboard.swf",
+  moviePath: "path/to/ZeroClipboard.swf",
 
   // SWF inbound scripting policy: page domains that the SWF should trust. (single string or array of strings)
   trustedDomains: [window.location.host],
@@ -110,7 +110,7 @@ var _globalConfig = {
 };
 ```
 
-You can override the defaults by making a call like `ZeroClipboard.config({ swfPath: "new/path" });` before you create any clients.
+You can override the defaults by making a call like `ZeroClipboard.config({ moviePath: "new/path" });` before you create any clients.
 
 
 ### The `trustedDomains` option: SWF inbound scripting access
