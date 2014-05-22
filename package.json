@@ -67,5 +67,9 @@
   },
   "scripts": {
     "test": "grunt travis --verbose"
+  },
+  "spm": {
+    "main": "ZeroClipboard.js",
+    "output": ["ZeroClipboard.swf"]
   }
 }
