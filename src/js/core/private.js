@@ -1654,11 +1654,11 @@ var _detectFlashSupport = function(ActiveXObject) {
     plugin = mimeType && mimeType.enabledPlugin;
     inspectPlugin(plugin);
   }
-  else if (typeof ActiveXObject !== "undefined") {
+  else if (typeof ActiveXObject !== "undefined" || "ActiveXObject" in window) {
     //
-    // Using IE < 11
+    // Using IE <= 11
     //
-    isActiveX = true;
+    isActiveX = (typeof ActiveXObject !== "undefined");
 
     try {
       // Try 7 first, since we know we can use GetVariable with it
