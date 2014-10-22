@@ -329,4 +329,7 @@ module.exports = function(grunt) {
   // Travis CI task
   grunt.registerTask("travis",  ["validate", "build-travis", "test", "qunit:coveralls", "coveralls"]);
 
+  // Local Flash dev
+  grunt.registerTask("asdev",   ["validate", "build"]);
+
 };
