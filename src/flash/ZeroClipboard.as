@@ -246,10 +246,10 @@ package {
 
       var result:Object = undefined;  // NOPMD
       if (this.jsProxy.isComplete()) {
-        result = this.jsProxy.call(this.jsEmitter, [eventObj]);
+        result = this.jsProxy.call(this.jsEmitter, eventObj);
       }
       else {
-        this.jsProxy.send(this.jsEmitter, [eventObj]);
+        this.jsProxy.send(this.jsEmitter, eventObj);
       }
       return result;
     }
