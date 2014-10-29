@@ -181,7 +181,7 @@ module.exports = function(grunt) {
     },
     mxmlc: {
       options: {
-        rawConfig: "-target-player=11.0.0 -static-link-runtime-shared-libraries=true"
+        rawConfig: "-target-player=11.0.0 -static-link-runtime-shared-libraries=true -actionscript-file-encoding=UTF-8"
       },
       swf: {
         files: {
