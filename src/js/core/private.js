@@ -1543,7 +1543,7 @@ var _addClass = function(element, value) {
         element.classList.add(classNames[c]);
       }
     }
-    else if (element.hasOwnProperty("className")) {
+    else if (element.className !== undefined) {
       className = " " + element.className + " ";
       for (c = 0, cl = classNames.length; c < cl; c++) {
         if (className.indexOf(" " + classNames[c] + " ") === -1) {
