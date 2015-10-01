@@ -155,7 +155,7 @@ var _off = function(eventType, listener) {
     events = _keys(_handlers);
   }
   else if (typeof eventType === "string" && eventType) {
-    events = eventType.split(/\s+/);
+    events = eventType.toLowerCase().split(/\s+/);
   }
   else if (typeof eventType === "object" && eventType && typeof listener === "undefined") {
     for (i in eventType) {
