@@ -167,7 +167,7 @@ var _off = function(eventType, listener) {
 
   if (events && events.length) {
     for (i = 0, len = events.length; i < len; i++) {
-      eventType = events[i].toLowerCase().replace(/^on/, "");
+      eventType = events[i].replace(/^on/, "");
       perEventHandlers = _handlers[eventType];
       if (perEventHandlers && perEventHandlers.length) {
         if (listener) {
