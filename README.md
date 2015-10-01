@@ -9,6 +9,7 @@ The ZeroClipboard library provides an easy way to copy text to the clipboard usi
 
 This is achieved by automatically floating the invisible movie on top of a [DOM](http://en.wikipedia.org/wiki/Document_Object_Model) element of your choice. Standard mouse events are even propagated out to your DOM element, so you can still have rollover and mousedown effects.
 
+**Note**: for non-Flash clipboard access, use [clipboard.js](https://github.com/zenorocha/clipboard.js/) instead.
 
 ## Limitations
 
