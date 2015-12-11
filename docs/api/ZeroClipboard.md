@@ -55,7 +55,7 @@ _[`undefined`]_ Emit the [`"destroy"`](#destroy) event, remove all event handler
 ZeroClipboard.setData("text/plain", "Blah");
 ```
 
-_[`undefined`]_ Set the pending `data` of type `format` for clipboard injection.
+_[`undefined`]_ Set the pending `data` of type [`format`](supported-formats) for clipboard injection.
 
 ```js
 ZeroClipboard.setData({
@@ -64,7 +64,7 @@ ZeroClipboard.setData({
 });
 ```
 
-_[`undefined`]_ Set the pending `data` of various formats for clipboard injection.
+_[`undefined`]_ Set the pending `data` of various [formats](supported-formats) for clipboard injection.
 
 
 #### `ZeroClipboard.clearData(...)`
@@ -73,13 +73,13 @@ _[`undefined`]_ Set the pending `data` of various formats for clipboard injectio
 ZeroClipboard.clearData("text/plain");
 ```
 
-_[`undefined`]_ Clear the pending data of type `format` for clipboard injection.
+_[`undefined`]_ Clear the pending data of type [`format`](supported-formats) for clipboard injection.
 
 ```js
 ZeroClipboard.clearData();
 ```
 
-_[`undefined`]_ Clear the pending data of ALL formats for clipboard injection.
+_[`undefined`]_ Clear the pending data of ALL [formats](supported-formats) for clipboard injection.
 
 
 #### `ZeroClipboard.getData(...)`
@@ -90,13 +90,13 @@ _Added in `v2.1.0`._
 var text = ZeroClipboard.getData("text/plain");
 ```
 
-_[`String`]_ Get the pending data of type `format` for clipboard injection.
+_[`String`]_ Get the pending data of type [`format`](supported-formats) for clipboard injection.
 
 ```js
 var dataObj = ZeroClipboard.getData();
 ```
 
-_[`Object`]_ Get a copy of the pending data of ALL formats for clipboard injection.
+_[`Object`]_ Get a copy of the pending data of ALL [formats](supported-formats) for clipboard injection.
 
 
 #### `ZeroClipboard.focus(...)`
@@ -622,7 +622,7 @@ ZeroClipboard.on("error", function(e) {
 
 _Added in `v2.2.0`._
 
-This type of `error` event fires when any error occurs while the Flash layer is attempting to inject the pending clipboard data into the clipboard. This event is fired only if the injection of at least 1 data format into the clipboard threw an error but does **not** necessarily mean that the injection failed for _every_ data format.
+This type of `error` event fires when any error occurs while the Flash layer is attempting to inject the pending clipboard data into the clipboard. This event is fired only if the injection of at least 1 data [format](supported-formats) into the clipboard threw an error but does **not** necessarily mean that the injection failed for _every_ data [format](supported-formats).
 
 If it is fired at all, it is fired _after_ the `aftercopy` event and before the bubbled `click` event.
 
@@ -1088,3 +1088,5 @@ ZeroClipboard was intentionally configured to _not_ allow the SWF to be served f
 ### `file://` Protocol Limitations
 
 If you want to either use ZeroClipboard on a page hosted via the `file://` protocol or serve ZeroClipboard's assets via the `file://` protocol, you are almost guaranteed to run into some roadblocks due to Flash Player security restrictions. See [../instructions.md#file-protocol-limitations](../instructions.md#file-protocol-limitations) for an in-depth explanation of this limitation and the potential workarounds.
+
+[supported-formats]: ../instructions.md#clipboard-formats
