@@ -42,7 +42,9 @@ See [`sandbox`ed `iframe` Limitations](#sandboxed-iframe-limitations) below.
 
 See [Cross-Protocol Limitations](#cross-protocol-limitations) and [`file://` Protocol Limitations](#file-protocol-limitations) below.
 
+### Clipboard Format Limitations 
 
+See [Clipboard Formats](#clipboard-formats) below.
 
 ## Installation
 
@@ -608,7 +610,12 @@ At this point, your only remaining option is to disable your PPAPI Flash Player 
 
 If you are unwilling to disable your PPAPI Flash Player plugin, your goal has now officially been defeated by Flash Player's security restrictions.  You should now reconsider our earlier recommendation to [stop hosting it over the `file://` protocol](#stop-hosting-it-over-the-file-protocol)... we _tried_ to warn you!
 
+### Clipboard Formats
+Flash / AIR have limitations on the formats they can send to the clipboard, the docs for which are [here](http://help.adobe.com/en_US/air/reference/html/flash/desktop/ClipboardFormats.html). ZeroClipboard supports the following subset:
 
+* **text** - `text/plain`, `text`, `air:text` or `flash:text`
+* **html** - `text/html`, `html`, `air:html` or `flash:html`
+* **rtf** - `application/rtf`, `text/rtf`, `rtf`, `richtext`, `air:rtf` or `flash:rtf`
 
 
 [valid_ids]: http://www.w3.org/TR/html4/types.html#type-id "HTML4 specification for `ID` and `Name` tokens"
