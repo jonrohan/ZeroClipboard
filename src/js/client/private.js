@@ -206,6 +206,34 @@ var _clientClip = function(elements) {
   if (!_clientMeta[this.id]) {
     throw new Error("Attempted to clip element(s) to a destroyed ZeroClipboard client instance");
   }
+  // If the browser supports clipboard API natively, we define methods
+  // for handling click and copy events
+  var _click, _copy;
+  if(_nativeClipboardAPI) {
+    _click = function(){
+      // Make sure we invoke copy listeners that might use setData()
+
+      var clipData = ZeroClipboard.emit({type: "copy", target: this});
+      if(clipData) {
+        var _boundCopy = _copy.bind({clipData:clipData});
+        document.addEventListener("copy", _boundCopy, false);
+        // This command will trigger our copy listener
+        document.execCommand("copy", null, false);
+        document.removeEventListener("copy", _boundCopy, false);
+        ZeroClipboard.clearData();
+      }
+    };
+    _copy = function(e){
+      if (_hasOwn.call(this.clipData,"text")) {
+        e.clipboardData.setData("text/plain", this.clipData.text);
+        e.preventDefault();
+      }
+      if (_hasOwn.call(this.clipData, "html")) {
+        e.clipboardData.setData("text/html", this.clipData.html);
+        e.preventDefault();
+      }
+    };
+  }
 
   elements = _prepClip(elements);
 
@@ -217,6 +245,10 @@ var _clientClip = function(elements) {
         _elementMeta[elements[i].zcClippingId] = [this.id];
         if (_globalConfig.autoActivate === true) {
           _addMouseHandlers(elements[i]);
+        }
+        if(_nativeClipboardAPI) {
+          // Add a click listener to the element, no Flash overlay
+          elements[i].addEventListener("click", _click, false);
         }
       }
       else if (_elementMeta[elements[i].zcClippingId].indexOf(this.id) === -1) {

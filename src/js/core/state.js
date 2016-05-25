@@ -16,6 +16,24 @@ var _pageIsFramed = (function() {
 
 
 /**
+ * Check this web browser's native Clipboard API implementation status
+ * @private
+ */
+var _nativeClipboardAPI = false;
+
+try{
+  /* In some browsers, in particular Firefox < 40, queryCommandSupported() will
+   * return true because the command is "supported" in scripts with extra privileges
+   * - but trying to use the API will throw. We use both functions below, but the order
+   * matters: if queryCommandEnabled() throws, we will not use queryCommandSupported().
+   * queryCommandEnabled() is expected to return false when not called from a
+   * user-triggered thread, so it's only called here to see if it throws..
+   */
+  _nativeClipboardAPI = document.queryCommandEnabled("copy") || document.queryCommandSupported("copy");
+}catch(e){}
+
+
+/**
  * Keep track of the state of the Flash object.
  * @private
  */

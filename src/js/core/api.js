@@ -209,3 +209,11 @@ ZeroClipboard.blur = ZeroClipboard.deactivate = function() {
 ZeroClipboard.activeElement = function() {
   return _activeElement.apply(this, _args(arguments));
 };
+
+/**
+* The implementation property gets set to 'native' or 'flash' respectively
+* to show whether we use the browser's built-in clipboard API or a Flash
+* overlay. Some test scripts use this information to skip irrelevant tests.
+*/
+
+ZeroClipboard.implementation = _nativeClipboardAPI ? "native" : "flash";
