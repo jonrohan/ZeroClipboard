@@ -1985,12 +1985,13 @@ var _detectFlashSupport = function(ActiveXObject) {
   _flashState.pluginType = isPPAPI ? "pepper" : (isActiveX ? "activex" : (hasFlash ? "netscape" : "unknown"));
 };
 
-
-/**
- * Invoke the Flash detection algorithms immediately upon inclusion so we're not waiting later.
- */
-_detectFlashSupport(_ActiveXObject);
-/**
- * Always assess the `sandboxed` state of the page at important Flash-related moments.
- */
-_detectSandbox(true);
+if(!_nativeClipboardAPI) {
+  /**
+   * Invoke the Flash detection algorithms immediately upon inclusion so we're not waiting later.
+   */
+  _detectFlashSupport(_ActiveXObject);
+  /**
+   * Always assess the `sandboxed` state of the page at important Flash-related moments.
+   */
+  _detectSandbox(true);
+}
