@@ -1611,6 +1611,27 @@ var _getStyle = function(el, prop) {
 
 
 /**
+ * Get the current zoom factor for the page. Calculates the zoom factor by
+ * determining the width of the body as reported without scaling divided by
+ * the width of the body including CSS rules.
+ *
+ * @returns Float representing the zoom factor.
+ * @private
+ */
+var _getPageZoomFactor = function () {
+  var rect, physicalWidth, logicalWidth,
+  zoomFactor = 1.0;
+  if (document.body.getBoundingClientRect) {
+      rect = document.body.getBoundingClientRect();
+      physicalWidth = rect.right - rect.left;
+      logicalWidth = document.body.offsetWidth;
+      zoomFactor = Math.round(physicalWidth / logicalWidth * 100) / 100;
+  }
+  return zoomFactor;
+};
+
+
+/**
  * Get the absolutely positioned coordinates of a DOM element.
  *
  * @returns Object containing the element's position, width, and height.
@@ -1622,17 +1643,6 @@ var _getElementPosition = function(el) {
     top: 0,
     width: 0,
     height: 0
-  },
-  _getPageZoomFactor = function () {
-        var rect, physicalWidth, logicalWidth,
-        zoomFactor = 1.0;
-        if (document.body.getBoundingClientRect) {
-            rect = document.body.getBoundingClientRect();
-            physicalWidth = rect.right - rect.left;
-            logicalWidth = document.body.offsetWidth;
-            zoomFactor = Math.round(physicalWidth / logicalWidth * 100) / 100;
-        }
-        return zoomFactor;
   },
   _pageZoomFactor = _getPageZoomFactor();
 
