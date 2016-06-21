@@ -1621,10 +1621,10 @@ var _getStyle = function(el, prop) {
 var _getPageZoomFactor = function () {
   var rect, physicalWidth, logicalWidth,
   zoomFactor = 1.0;
-  if (document.body.getBoundingClientRect) {
-      rect = document.body.getBoundingClientRect();
+  if (_document.body.getBoundingClientRect) {
+      rect = _document.body.getBoundingClientRect();
       physicalWidth = rect.right - rect.left;
-      logicalWidth = document.body.offsetWidth;
+      logicalWidth = _document.body.offsetWidth;
       zoomFactor = Math.round(physicalWidth / logicalWidth * 100) / 100;
   }
   return zoomFactor;
