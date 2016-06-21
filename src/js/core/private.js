@@ -1644,7 +1644,7 @@ var _getElementPosition = function(el) {
     width: 0,
     height: 0
   },
-  _pageZoomFactor = _getPageZoomFactor();
+  pageZoomFactor = _getPageZoomFactor();
 
   // Use getBoundingClientRect where available (almost everywhere).
   // See: http://www.quirksmode.org/dom/w3c_cssom.html
@@ -1654,7 +1654,7 @@ var _getElementPosition = function(el) {
 
     // Get the document's scroll offsets
     var pageXOffset = _window.pageXOffset;
-    var pageYOffset = Math.round(_window.pageYOffset / _pageZoomFactor);
+    var pageYOffset = Math.round(_window.pageYOffset / pageZoomFactor);
 
     // `clientLeft`/`clientTop` are to fix IE's 2px offset in standards mode
     var leftBorderWidth = _document.documentElement.clientLeft || 0;
@@ -1672,9 +1672,9 @@ var _getElementPosition = function(el) {
     }
 
     pos.left = elRect.left + pageXOffset - leftBorderWidth - leftBodyOffset;
-    pos.top = Math.round((elRect.top + pageYOffset - topBorderWidth - topBodyOffset) / _pageZoomFactor);
-    pos.width = Math.round(("width" in elRect ? elRect.width : elRect.right - elRect.left) / _pageZoomFactor);
-    pos.height = Math.round(("height" in elRect ? elRect.height : elRect.bottom - elRect.top) / _pageZoomFactor);
+    pos.top = Math.round((elRect.top + pageYOffset - topBorderWidth - topBodyOffset) / pageZoomFactor);
+    pos.width = Math.round(("width" in elRect ? elRect.width : elRect.right - elRect.left) / pageZoomFactor);
+    pos.height = Math.round(("height" in elRect ? elRect.height : elRect.bottom - elRect.top) / pageZoomFactor);
   }
 
   return pos;
