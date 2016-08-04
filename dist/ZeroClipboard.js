@@ -412,6 +412,7 @@
     fixLineEndings: true,
     containerId: "global-zeroclipboard-html-bridge",
     containerClass: "global-zeroclipboard-container",
+    findExistingContainer: false,
     swfObjectId: "global-zeroclipboard-flash-bridge",
     hoverClass: "zeroclipboard-is-hover",
     activeClass: "zeroclipboard-is-active",
@@ -1181,8 +1182,13 @@
  * @private
  */
   var _createHtmlBridge = function() {
-    var container = _document.createElement("div");
-    container.id = _globalConfig.containerId;
+    var container;
+    if (_globalConfig.findExistingContainer) {
+      container = _document.getElementById(_globalConfig.containerId);
+    } else {
+      container = _document.createElement("div");
+      container.id = _globalConfig.containerId;
+    }
     container.className = _globalConfig.containerClass;
     container.style.position = "absolute";
     container.style.left = "0px";
@@ -1221,7 +1227,9 @@
       container = _createHtmlBridge();
       var divToBeReplaced = _document.createElement("div");
       container.appendChild(divToBeReplaced);
-      _document.body.appendChild(container);
+      if (!container.parentNode) {
+        _document.body.appendChild(container);
+      }
       var tmpDiv = _document.createElement("div");
       var usingActiveX = _flashState.pluginType === "activex";
       tmpDiv.innerHTML = '<object id="' + _globalConfig.swfObjectId + '" name="' + _globalConfig.swfObjectId + '" ' + 'width="100%" height="100%" ' + (usingActiveX ? 'classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"' : 'type="application/x-shockwave-flash" data="' + swfUrl + '"') + ">" + (usingActiveX ? '<param name="movie" value="' + swfUrl + '"/>' : "") + '<param name="allowScriptAccess" value="' + allowScriptAccess + '"/>' + '<param name="allowNetworking" value="' + allowNetworking + '"/>' + '<param name="menu" value="false"/>' + '<param name="wmode" value="transparent"/>' + '<param name="flashvars" value="' + flashvars + '"/>' + '<div id="' + _globalConfig.swfObjectId + '_fallbackContent">&nbsp;</div>' + "</object>";

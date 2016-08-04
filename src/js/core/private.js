@@ -1053,8 +1053,13 @@ var _watchForSwfFallbackContent = function() {
  * @private
  */
 var _createHtmlBridge = function() {
-  var container = _document.createElement("div");
-  container.id = _globalConfig.containerId;
+  var container;
+  if (_globalConfig.findExistingContainer) {
+    container = _document.getElementById(_globalConfig.containerId);
+  } else {
+    container = _document.createElement("div");
+    container.id = _globalConfig.containerId;
+  }
   container.className = _globalConfig.containerClass;
   container.style.position = "absolute";
   container.style.left = "0px";
@@ -1086,7 +1091,7 @@ var _getHtmlBridge = function(flashBridge) {
  * @private
  */
 var _embedSwf = function() {
-  /*jshint maxstatements:26 */
+  /*jshint maxstatements:28 */
 
   var len,
       flashBridge = _flashState.bridge,
@@ -1108,10 +1113,11 @@ var _embedSwf = function() {
     var divToBeReplaced = _document.createElement("div");
     container.appendChild(divToBeReplaced);
 
-    // Add this outer container (and its to-be-replaced child node) to the DOM in advance in order
-    // to avoid Flash quirks in various browsers, e.g. https://github.com/zeroclipboard/zeroclipboard/issues/204
-    _document.body.appendChild(container);
-
+    if (!container.parentNode) {
+      // Add this outer container (and its to-be-replaced child node) to the DOM in advance in order
+      // to avoid Flash quirks in various browsers, e.g. https://github.com/zeroclipboard/zeroclipboard/issues/204
+      _document.body.appendChild(container);
+    }
     // Create the actual Flash object's shell
     var tmpDiv = _document.createElement("div");
     // The object element plus its movie source URL both MUST be created together.
@@ -1630,6 +1636,7 @@ var _getElementPosition = function(el) {
     // Compute left / top offset (works for `position:fixed`, too!)
     var elRect = el.getBoundingClientRect();
 
+    var containerParent = _document.getElementById(_globalConfig.containerId).parentNode;
     // Get the document's scroll offsets
     var pageXOffset = _window.pageXOffset;
     var pageYOffset = _window.pageYOffset;
@@ -1642,11 +1649,11 @@ var _getElementPosition = function(el) {
     // This is critical for when the `body` element's CSS includes `position:relative`
     var leftBodyOffset = 0;
     var topBodyOffset = 0;
-    if (_getStyle(_document.body, "position") === "relative") {
-      var bodyRect = _document.body.getBoundingClientRect();
+    if (_getStyle(containerParent, "position") === "relative") {
+      var containerParentRect = containerParent.getBoundingClientRect();
       var htmlRect = _document.documentElement.getBoundingClientRect();
-      leftBodyOffset = (bodyRect.left - htmlRect.left) || 0;
-      topBodyOffset = (bodyRect.top - htmlRect.top) || 0;
+      leftBodyOffset = (containerParentRect.left - htmlRect.left) || 0;
+      topBodyOffset = (containerParentRect.top - htmlRect.top) || 0;
     }
 
     pos.left = elRect.left + pageXOffset - leftBorderWidth - leftBodyOffset;
