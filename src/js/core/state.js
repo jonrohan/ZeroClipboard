@@ -232,6 +232,9 @@ var _globalConfig = {
   // Sets the class of the `div` encapsulating the Flash object.
   containerClass: "global-zeroclipboard-container",
 
+  // If set to true does not create new container but grabs already existing with ID = containerId
+  findExistingContainer: false,
+
   // Sets the ID and name of the Flash `object` element.
   // Value is validated against the HTML4 spec for `ID` and `Name` tokens.
   swfObjectId: "global-zeroclipboard-flash-bridge",
