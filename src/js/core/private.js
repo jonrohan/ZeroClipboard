@@ -55,13 +55,28 @@ var _state = function() {
   _detectSandbox();
 
   return {
-    browser: _pick(_navigator, ["userAgent", "platform", "appName", "appVersion"]),
+    browser: _extend(_pick(_navigator, ["userAgent", "platform", "appName", "appVersion"]), { "isSupported": _isBrowserSupported() }),
     flash: _omit(_flashState, ["bridge"]),
     zeroclipboard: {
       version: ZeroClipboard.version,
       config: ZeroClipboard.config()
     }
   };
+};
+
+
+/**
+ * Does this browser support all of the necessary DOM and JS features necessary?
+ * @private
+ */
+var _isBrowserSupported = function() {
+  return !!(
+    // DOM Level 2
+    _document.addEventListener &&
+    // ECMAScript 5.1
+    _window.Object.keys &&
+    _window.Array.prototype.map
+  );
 };
 
 
@@ -120,6 +135,12 @@ var _on = function(eventType, listener) {
       });
     }
     if (added.error) {
+      if (!_isBrowserSupported()) {
+        ZeroClipboard.emit({
+          type: "error",
+          name: "browser-unsupported"
+        });
+      }
       for (i = 0, len = _flashStateErrorNames.length; i < len; i++) {
         if (_flashState[_flashStateErrorNames[i].replace(/^flash-/, "")] === true) {
           ZeroClipboard.emit({
@@ -155,7 +176,7 @@ var _off = function(eventType, listener) {
     events = _keys(_handlers);
   }
   else if (typeof eventType === "string" && eventType) {
-    events = eventType.split(/\s+/);
+    events = eventType.toLowerCase().split(/\s+/);
   }
   else if (typeof eventType === "object" && eventType && typeof listener === "undefined") {
     for (i in eventType) {
@@ -167,7 +188,7 @@ var _off = function(eventType, listener) {
 
   if (events && events.length) {
     for (i = 0, len = events.length; i < len; i++) {
-      eventType = events[i].toLowerCase().replace(/^on/, "");
+      eventType = events[i].replace(/^on/, "");
       perEventHandlers = _handlers[eventType];
       if (perEventHandlers && perEventHandlers.length) {
         if (listener) {
@@ -253,6 +274,12 @@ var _create = function() {
     // We fall back to using Flash..
     // Make note of the most recent sandbox assessment
     var previousState = _flashState.sandboxed;
+
+    if (!_isBrowserSupported()) {
+      _flashState.ready = false;
+      ZeroClipboard.emit({ type: "error", name: "browser-unsupported" });
+      return;
+    }
 
     // Always reassess the `sandboxed` state of the page at important Flash-related moments
     _detectSandbox();
@@ -745,7 +772,7 @@ var _getSandboxStatusFromErrorEvent = function(event) {
  * @private
  */
 var _preprocessEvent = function(event) {
-  /*jshint maxstatements:27 */
+  /*jshint maxstatements:28 */
 
   var element = event.target || _currentElement || null;
 
@@ -759,7 +786,18 @@ var _preprocessEvent = function(event) {
         _flashState.sandboxed = isSandboxed;
       }
 
-      if (_flashStateErrorNames.indexOf(event.name) !== -1) {
+      if (event.name === "browser-unsupported") {
+        _extend(_flashState, {
+          disabled:    false,
+          outdated:    false,
+          unavailable: false,
+          degraded:    false,
+          deactivated: false,
+          overdue:     false,
+          ready:       false
+        });
+      }
+      else if (_flashStateErrorNames.indexOf(event.name) !== -1) {
         _extend(_flashState, {
           disabled:    event.name === "flash-disabled",
           outdated:    event.name === "flash-outdated",
