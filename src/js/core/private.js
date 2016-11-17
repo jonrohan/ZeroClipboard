@@ -269,48 +269,52 @@ var _emit = function(event) {
  * @private
  */
 var _create = function() {
-  // Make note of the most recent sandbox assessment
-  var previousState = _flashState.sandboxed;
+  if(!_nativeClipboardAPI) {
+    // This browser does not support the Clipboard API
+    // We fall back to using Flash..
+    // Make note of the most recent sandbox assessment
+    var previousState = _flashState.sandboxed;
 
-  if (!_isBrowserSupported()) {
-    _flashState.ready = false;
-    ZeroClipboard.emit({ type: "error", name: "browser-unsupported" });
-    return;
-  }
-
-  // Always reassess the `sandboxed` state of the page at important Flash-related moments
-  _detectSandbox();
-
-  // Setup the Flash <-> JavaScript bridge
-  if (typeof _flashState.ready !== "boolean") {
-    _flashState.ready = false;
-  }
-
-  // If the page is newly sandboxed (or newly understood to be sandboxed), inform the consumer
-  if (_flashState.sandboxed !== previousState && _flashState.sandboxed === true) {
-    _flashState.ready = false;
-    ZeroClipboard.emit({ type: "error", name: "flash-sandboxed" });
-  }
-  else if (!ZeroClipboard.isFlashUnusable() && _flashState.bridge === null) {
-    var maxWait = _globalConfig.flashLoadTimeout;
-    if (typeof maxWait === "number" && maxWait >= 0) {
-      _flashCheckTimeout = _setTimeout(function() {
-        // If it took longer than `_globalConfig.flashLoadTimeout` milliseconds to receive
-        // a `ready` event, so consider Flash "deactivated".
-        if (typeof _flashState.deactivated !== "boolean") {
-          _flashState.deactivated = true;
-        }
-        if (_flashState.deactivated === true) {
-          ZeroClipboard.emit({ "type": "error", "name": "flash-deactivated" });
-        }
-      }, maxWait);
+    if (!_isBrowserSupported()) {
+      _flashState.ready = false;
+      ZeroClipboard.emit({ type: "error", name: "browser-unsupported" });
+      return;
     }
 
-    // If attempting a fresh SWF embedding, it is safe to ignore the `overdue` status
-    _flashState.overdue = false;
+    // Always reassess the `sandboxed` state of the page at important Flash-related moments
+    _detectSandbox();
 
-    // Embed the SWF
-    _embedSwf();
+    // Setup the Flash <-> JavaScript bridge
+    if (typeof _flashState.ready !== "boolean") {
+      _flashState.ready = false;
+    }
+
+    // If the page is newly sandboxed (or newly understood to be sandboxed), inform the consumer
+    if (_flashState.sandboxed !== previousState && _flashState.sandboxed === true) {
+      _flashState.ready = false;
+      ZeroClipboard.emit({ type: "error", name: "flash-sandboxed" });
+    }
+    else if (!ZeroClipboard.isFlashUnusable() && _flashState.bridge === null) {
+      var maxWait = _globalConfig.flashLoadTimeout;
+      if (typeof maxWait === "number" && maxWait >= 0) {
+        _flashCheckTimeout = _setTimeout(function() {
+          // If it took longer than `_globalConfig.flashLoadTimeout` milliseconds to receive
+          // a `ready` event, so consider Flash "deactivated".
+          if (typeof _flashState.deactivated !== "boolean") {
+            _flashState.deactivated = true;
+          }
+          if (_flashState.deactivated === true) {
+            ZeroClipboard.emit({ "type": "error", "name": "flash-deactivated" });
+          }
+        }, maxWait);
+      }
+
+      // If attempting a fresh SWF embedding, it is safe to ignore the `overdue` status
+      _flashState.overdue = false;
+
+      // Embed the SWF
+      _embedSwf();
+    }
   }
 };
 
@@ -2019,12 +2023,13 @@ var _detectFlashSupport = function(ActiveXObject) {
   _flashState.pluginType = isPPAPI ? "pepper" : (isActiveX ? "activex" : (hasFlash ? "netscape" : "unknown"));
 };
 
-
-/**
- * Invoke the Flash detection algorithms immediately upon inclusion so we're not waiting later.
- */
-_detectFlashSupport(_ActiveXObject);
-/**
- * Always assess the `sandboxed` state of the page at important Flash-related moments.
- */
-_detectSandbox(true);
+if(!_nativeClipboardAPI) {
+  /**
+   * Invoke the Flash detection algorithms immediately upon inclusion so we're not waiting later.
+   */
+  _detectFlashSupport(_ActiveXObject);
+  /**
+   * Always assess the `sandboxed` state of the page at important Flash-related moments.
+   */
+  _detectSandbox(true);
+}
