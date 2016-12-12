@@ -347,6 +347,33 @@ Here is a more complete example which exercises many of the configuration option
 </html>
 ```
 
+### Example with React
+
+The Component:
+
+```js
+import React from 'react';
+import ZeroClipboard from 'zeroclipboard';
+
+const CopyButton = (props)=> {
+  return <button {...props} ref={elem=>new ZeroClipboard(elem)}>
+    {props.children}
+  </button>
+}
+
+export default CopyButton;
+```
+
+In the App:
+
+```js
+  <CopyButton data-clipboard-text={textToBeCopied}>Click to copy</CopyButton>
+```
+
+For more detail, please check this example showing how to use ZeroClipboard in React application.
+
+[https://github.com/wyvernnot/react-zeroclipboard-example](https://github.com/wyvernnot/react-zeroclipboard-example)
+
 
 ### "Starter Snippets" for Playground Sites
 
