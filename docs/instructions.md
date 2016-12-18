@@ -101,7 +101,7 @@ SWF file is hosted elsewhere, you need to set the URL like this (place this code
 tag):
 
 ```js
-ZeroClipboard.config( { swfPath: "http://YOURSERVER/path/ZeroClipboard.swf" } );
+ZeroClipboard.config( { moviePath: "http://YOURSERVER/path/ZeroClipboard.swf" } );
 ```
 
 ### Using the Minified Library
