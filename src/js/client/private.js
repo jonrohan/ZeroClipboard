@@ -128,7 +128,12 @@ var _clientOff = function(eventType, listener) {
 
   if (arguments.length === 0) {
     // Remove ALL of the handlers for ALL event types
-    events = _keys(handlers);
+
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+    //   if (typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
+    //     throw new TypeError('Object.keys called on non-object');
+    //   }
+    events = _keys(handlers || {});
   }
   else if (typeof eventType === "string" && eventType) {
     events = eventType.split(/\s+/);
